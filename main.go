@@ -1,7 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"github.com/hammer-code/lms-be/cmd"
+)
 
 func main() {
-	fmt.Println("Hello World")
+	cmd.Execute()
 }

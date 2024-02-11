@@ -8,11 +8,16 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/hammer-code/lms-be/app/servehttp"
+	"github.com/gorilla/mux"
+	"github.com/hammer-code/lms-be/app/admins"
+	admins_http "github.com/hammer-code/lms-be/app/admins/delivery/http"
+	admins_usecase "github.com/hammer-code/lms-be/app/admins/usecase"
+	users_repo "github.com/hammer-code/lms-be/app/users/repository"
 	"github.com/hammer-code/lms-be/config"
+	"github.com/hammer-code/lms-be/domain"
+	"github.com/hammer-code/lms-be/utils"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 	"gorm.io/driver/postgres"
 )
 
@@ -30,27 +35,20 @@ var serveHttpCmd = &cobra.Command{
 
 		cfg := config.GetConfig()
 
-		maxConnIdel := viper.GetInt("DB_POSTGRES_MAX_CONN_IDLE")
-		if maxConnIdel == 0 {
-			maxConnIdel = 10
-		}
-		maxConnOpen := viper.GetInt("DB_POSTGRES_MAX_CONN_OPEN")
-		if maxConnOpen == 0 {
-			maxConnOpen = 10
-		}
+		db := config.GetDatabase(postgres.Dialector{
+			Config: &postgres.Config{
+				DSN: cfg.DB_POSTGRES_DSN,
+			}})
 
-		handler := servehttp.GetHandler(servehttp.ContainerHTTP{
-			Config: cfg,
-			Database: config.GetDatabase(postgres.Dialector{
-				Config: &postgres.Config{
-					DSN: cfg.DB_POSTGRES_DSN,
-				},
-			}, maxConnIdel, maxConnOpen),
-		})
+		// repository
+		userRepo := users_repo.NewRepository()
+
+		// usecase
+		adminUsecase := admins_usecase.NewUsecase(db, userRepo)
 
 		srv := &http.Server{
 			Addr:    port(),
-			Handler: handler,
+			Handler: registerHandler(adminUsecase),
 		}
 
 		go func() {
@@ -74,4 +72,24 @@ var serveHttpCmd = &cobra.Command{
 
 func init() {
 	rootCmd.AddCommand(serveHttpCmd)
+}
+
+func health(w http.ResponseWriter, r *http.Request) {
+	utils.Response(domain.HttpResponse{
+		Code:    200,
+		Message: "good",
+		Data:    nil,
+	}, w)
+}
+
+func registerHandler(adminUsecase admins.UsecaseInterface) *mux.Router {
+
+	router := mux.NewRouter()
+	router.HandleFunc("/health", health)
+
+	v1 := router.PathPrefix("/api/v1").Subrouter()
+
+	admins_http.RegisterHandler(v1, adminUsecase)
+
+	return router
 }

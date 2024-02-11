@@ -7,5 +7,5 @@ import (
 )
 
 func (us *usecase) GetUsers(ctx context.Context) (users []domain.User, err error) {
-	return us.repository.GetUsers(ctx)
+	return us.userRepo.GetUsers(ctx, us.db)
 }

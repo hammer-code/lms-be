@@ -11,3 +11,4 @@ type (
 func (User) TableName() string {
 	return "users"
 }
+

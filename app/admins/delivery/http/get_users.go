@@ -1,4 +1,4 @@
-package handler
+package http
 
 import (
 	"net/http"
@@ -8,8 +8,8 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func (h *Handler) GetUsers(w http.ResponseWriter, r *http.Request) {
-	users, err := h.UserUsecase.GetUsers(r.Context())
+func (h *handler) GetUsers(w http.ResponseWriter, r *http.Request) {
+	users, err := h.usecase.GetUsers(r.Context())
 
 	if err != nil {
 		logrus.Error("userUsecase: failed to get users")

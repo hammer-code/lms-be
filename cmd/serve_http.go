@@ -9,10 +9,9 @@ import (
 	"syscall"
 
 	"github.com/gorilla/mux"
-	"github.com/hammer-code/lms-be/app/admins"
-	admins_http "github.com/hammer-code/lms-be/app/admins/delivery/http"
-	admins_usecase "github.com/hammer-code/lms-be/app/admins/usecase"
+	users_handler "github.com/hammer-code/lms-be/app/users/delivery/http"
 	users_repo "github.com/hammer-code/lms-be/app/users/repository"
+	users_usecase "github.com/hammer-code/lms-be/app/users/usecase"
 	"github.com/hammer-code/lms-be/config"
 	"github.com/hammer-code/lms-be/domain"
 	"github.com/hammer-code/lms-be/utils"
@@ -41,14 +40,19 @@ var serveHttpCmd = &cobra.Command{
 			}})
 
 		// repository
-		userRepo := users_repo.NewRepository()
+		userRepo := users_repo.NewRepository(db)
 
 		// usecase
-		adminUsecase := admins_usecase.NewUsecase(db, userRepo)
+		userUsecase := users_usecase.NewUsecase(userRepo)
+
+		// handler
+		userHandler := users_handler.NewHandler(userUsecase)
 
 		srv := &http.Server{
-			Addr:    port(),
-			Handler: registerHandler(adminUsecase),
+			Addr: port(),
+			Handler: registerHandler(handler{
+				userHandler: userHandler,
+			}),
 		}
 
 		go func() {
@@ -82,14 +86,18 @@ func health(w http.ResponseWriter, r *http.Request) {
 	}, w)
 }
 
-func registerHandler(adminUsecase admins.UsecaseInterface) *mux.Router {
+type handler struct {
+	userHandler users_handler.Handler
+}
+
+func registerHandler(h handler) *mux.Router {
 
 	router := mux.NewRouter()
 	router.HandleFunc("/health", health)
 
 	v1 := router.PathPrefix("/api/v1").Subrouter()
 
-	admins_http.RegisterHandler(v1, adminUsecase)
+	v1.HandleFunc("/users", h.userHandler.GetUsers).Methods(http.MethodGet)
 
 	return router
 }

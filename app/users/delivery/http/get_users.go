@@ -8,7 +8,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func (h *handler) GetUsers(w http.ResponseWriter, r *http.Request) {
+func (h Handler) GetUsers(w http.ResponseWriter, r *http.Request) {
 	users, err := h.usecase.GetUsers(r.Context())
 
 	if err != nil {

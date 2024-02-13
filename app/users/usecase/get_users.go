@@ -9,7 +9,7 @@ import (
 
 func (us *usecase) GetUsers(ctx context.Context) (users []domain.User, err error) {
 	if err = us.dbTX.StartTransaction(ctx, func(txCtx context.Context) error {
-		users, err = us.userRepo.GetUsers(ctx)
+		users, err = us.userRepo.GetUsers(txCtx)
 		if err != nil {
 			logrus.Error("us.GetUsers: failed to get users. ", err)
 			return err

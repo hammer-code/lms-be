@@ -3,6 +3,7 @@ package db
 import (
 	"context"
 
+	"github.com/hammer-code/lms-be/domain"
 	"github.com/sirupsen/logrus"
 )
 
@@ -11,7 +12,9 @@ func (d *dbTX) StartTransaction(ctx context.Context, fn func(txCtx context.Conte
 
 	defer tx.Rollback()
 
-	if err := fn(ctx); err != nil {
+	txCtx := context.WithValue(ctx, domain.ContextDatabaseTransaction, tx)
+
+	if err := fn(txCtx); err != nil {
 		logrus.Error("transaction database return err: ", err)
 		return err
 	}

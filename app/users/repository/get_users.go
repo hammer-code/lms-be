@@ -8,7 +8,7 @@ import (
 )
 
 func (repo *repository) GetUsers(ctx context.Context) (users []domain.User, err error) {
-	err = repo.db.Find(&users).Error
+	err = repo.db.DB(ctx).Find(&users).Error
 	if err != nil {
 		logrus.Error("repo.GetUsers: failed to get users")
 		return

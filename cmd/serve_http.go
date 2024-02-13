@@ -14,6 +14,7 @@ import (
 	users_usecase "github.com/hammer-code/lms-be/app/users/usecase"
 	"github.com/hammer-code/lms-be/config"
 	"github.com/hammer-code/lms-be/domain"
+	pkgDB "github.com/hammer-code/lms-be/pkg/db"
 	"github.com/hammer-code/lms-be/utils"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -39,11 +40,13 @@ var serveHttpCmd = &cobra.Command{
 				DSN: cfg.DB_POSTGRES_DSN,
 			}})
 
+		dbTx := pkgDB.NewDBTransaction(db)
+
 		// repository
-		userRepo := users_repo.NewRepository(db)
+		userRepo := users_repo.NewRepository(dbTx)
 
 		// usecase
-		userUsecase := users_usecase.NewUsecase(userRepo)
+		userUsecase := users_usecase.NewUsecase(userRepo, dbTx)
 
 		// handler
 		userHandler := users_handler.NewHandler(userUsecase)

@@ -2,16 +2,16 @@ package repository
 
 import (
 	"github.com/hammer-code/lms-be/app/users"
-	"gorm.io/gorm"
+	pkgDB "github.com/hammer-code/lms-be/pkg/db"
 )
 
 type (
 	repository struct {
-		db *gorm.DB
+		db pkgDB.DatabaseTransaction
 	}
 )
 
-func NewRepository(db *gorm.DB) users.UserRepository {
+func NewRepository(db pkgDB.DatabaseTransaction) users.UserRepository {
 	return &repository{
 		db,
 	}

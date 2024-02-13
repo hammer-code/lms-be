@@ -13,6 +13,7 @@ type (
 
 	DatabaseTransaction interface {
 		StartTransaction(ctx context.Context, fn func(txCtx context.Context) error) error
+		DB(ctx context.Context) *gorm.DB
 	}
 )
 

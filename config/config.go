@@ -12,6 +12,7 @@ type (
 		APP_NAME        string
 		APP_PORT        string
 		DB_POSTGRES_DSN string
+		JWT_SECRET_KEY  string
 	}
 )
 
@@ -31,5 +32,6 @@ func GetConfig() Config {
 		APP_NAME:        viper.GetString("APP_NAME"),
 		APP_PORT:        viper.GetString("APP_PORT"),
 		DB_POSTGRES_DSN: viper.GetString("DB_POSTGRES_DSN"),
+		JWT_SECRET_KEY: viper.GetString("JWT_SECRET_KEY"),
 	}
 }

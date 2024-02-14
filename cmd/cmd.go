@@ -22,8 +22,12 @@ func Execute() {
 	// load config
 	config.LoadConfig()
 
+	// Adding child commands
+	rootCmd.AddCommand(dbMigrate, serveHttpCmd)
+
 	// cmd execute
 	if err := rootCmd.Execute(); err != nil {
 		logrus.Fatal(context.Background(), "cmd Execute", err)
 	}
+
 }

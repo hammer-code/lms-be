@@ -11,6 +11,7 @@ type (
 	}
 )
 
+// injek magang
 func NewRepository(db pkgDB.DatabaseTransaction) users.UserRepository {
 	return &repository{
 		db,

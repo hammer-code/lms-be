@@ -15,6 +15,7 @@ import (
 	"github.com/hammer-code/lms-be/config"
 	"github.com/hammer-code/lms-be/domain"
 	pkgDB "github.com/hammer-code/lms-be/pkg/db"
+	"github.com/hammer-code/lms-be/pkg/jwt"
 	"github.com/hammer-code/lms-be/utils"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -46,7 +47,7 @@ var serveHttpCmd = &cobra.Command{
 		userRepo := users_repo.NewRepository(dbTx)
 
 		// usecase
-		userUsecase := users_usecase.NewUsecase(userRepo, dbTx)
+		userUsecase := users_usecase.NewUsecase(userRepo, dbTx, jwt.NewJwt(cfg.JWT_SECRET_KEY))
 
 		// handler
 		userHandler := users_handler.NewHandler(userUsecase)
@@ -99,8 +100,9 @@ func registerHandler(h handler) *mux.Router {
 	router.HandleFunc("/health", health)
 
 	v1 := router.PathPrefix("/api/v1").Subrouter()
-
+	v1.HandleFunc("/register",h.userHandler.Register).Methods(http.MethodPost)
 	v1.HandleFunc("/users", h.userHandler.GetUsers).Methods(http.MethodGet)
+	v1.HandleFunc("/login", h.userHandler.Login).Methods(http.MethodPost)
 
 	return router
 }

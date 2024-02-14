@@ -9,8 +9,12 @@ import (
 type (
 	UserRepository interface {
 		GetUsers(ctx context.Context) (users []domain.User, err error)
+		CreateUser(ctx context.Context, userReq domain.User) (user domain.User, err error)
+		FindByEmail(ctx context.Context, email string) (user domain.User, err error)
 	}
 	UserUsecase interface {
 		GetUsers(ctx context.Context) (users []domain.User, err error)
+		Register(ctx context.Context, userReq domain.User) (user domain.User, err error)
+		Login(ctx context.Context, userReq domain.Login) (user domain.User, token string, err error)
 	}
 )

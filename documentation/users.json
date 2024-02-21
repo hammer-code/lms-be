@@ -1,0 +1,304 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "LMS Hammercode",
+    "description": "Documentation whole API in this project",
+    "version": "1.0.0"
+  },
+
+  "servers": [
+    {
+      "url": "http://localhost:8000/api/v1/",
+      "description": "localhost"
+    }
+  ],
+  "tags": [
+    {
+      "name": "User",
+      "description": "API user"
+    },
+    {
+      "name": "Module",
+      "description": "API Module"
+    }
+  ],
+  "paths": {
+    "/users": {
+      "get": {
+        "tags": ["User"],
+        "summary": "Get All Users",
+        "description": "Get all users in database postgres ",
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error"
+          }
+        }
+      }
+    },
+    "/users/login": {
+      "post": {
+        "tags": ["User"],
+        "summary": "login for user",
+        "description": "",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestLogin"
+              },
+              "examples": {
+                "user": {
+                  "value": {
+                    "email": "student@gmail.com",
+                    "password": "student123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "success": {
+                    "value": {
+                      "status": true,
+                      "message": "success login",
+                      "data": {
+                        "id": "c84a71c9-526a-4622-9de2-22584f1690e2",
+                        "fullname": "student",
+                        "email": "student@gmail.com",
+                        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDAxMDQzOTksImlkIjoiYzg0YTcxYzktNTI2YS00NjIyLTlkZTItMjI1ODRmMTY5MGUyIiwicm9sZSI6IiJ9.cd68WXniUznvZKcoYNmadSs25yYfep80JLF-RlPLw90"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/register": {
+      "post": {
+        "tags": ["User"],
+        "summary": "register user",
+        "description": "register  for user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestRegister"
+              },
+              "examples": {
+                "success": {
+                  "value": {
+                    "user_name": "student",
+                    "email": "student@gmail.com",
+                    "password": "student123",
+                    "confirm_password": "student123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "success": {
+                    "value": {
+                      "status": true,
+                      "message": "success register",
+                      "data": {
+                        "id": "c84a71c9-526a-4622-9de2-22584f1690e2",
+                        "user_name": "student",
+                        "email": "student@gmail.com"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/modules/{courseId}": {
+      "get": {
+        "tags": ["Module"],
+        "summary": "Get All Modules",
+        "description": "Get all Modules by Course id ",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CourseId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AllModules"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/modules/{courseId}/{moduleId}": {
+      "get": {
+        "tags": ["Module"],
+        "summary": "Get Detail Modules",
+        "description": "Get Detail Modules by Course id & module id ",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CourseId"
+          },
+          {
+            "$ref": "#/components/parameters/ModuleId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailModule"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization"
+      }
+    },
+    "schemas": {
+      "RequestLogin": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "required": ["email", "password"]
+      },
+      "RequestRegister": {
+        "type": "object",
+        "properties": {
+          "user_name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "confirm_password": {
+            "type": "string"
+          }
+        },
+        "required": ["user_name", "email", "password", "confirm_password"]
+      },
+      "AllModules": {
+        "type": "object",
+        "properties": {
+          "course_id": {
+            "type": "string"
+          },
+          "modules": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "title_module": {
+                "type": "string"
+              },
+              "description_module": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "DetailModule": {
+        "id": {
+          "type": "string"
+        },
+        "title_module": {
+          "type": "string"
+        },
+        "description_module": {
+          "type": "string"
+        }
+      }
+    },
+    "parameters": {
+      "CourseId": {
+        "name": "courseId",
+        "in": "path",
+        "description": "id of course",
+        "required": true,
+        "schema": {
+          "type": "string"
+        },
+        "examples": {
+          "course": {
+            "value": "course-A1"
+          }
+        }
+      },
+      "ModuleId": {
+        "name": "moduleId",
+        "in": "path",
+        "description": "id of module",
+        "required": true,
+        "schema": {
+          "type": "string"
+        },
+        "examples": {
+          "course": {
+            "value": "module-A1"
+          }
+        }
+      }
+    }
+  }
+}

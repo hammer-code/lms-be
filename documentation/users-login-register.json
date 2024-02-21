@@ -20,6 +20,10 @@
     {
       "name": "Course",
       "description": "API course"
+    },
+    {
+      "name": "Module",
+      "description": "API Module"
     }
   ],
   "paths": {

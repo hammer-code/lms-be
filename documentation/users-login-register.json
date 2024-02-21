@@ -16,6 +16,10 @@
     {
       "name": "User",
       "description": "API user"
+    },
+    {
+      "name": "Module",
+      "description": "API Module"
     }
   ],
   "paths": {

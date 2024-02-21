@@ -52,7 +52,7 @@
         }
       }
     },
-    "/users/login": {
+    "/users/": {
       "post": {
         "tags": ["User"],
         "summary": "login for user",
@@ -175,9 +175,291 @@
           },
           "500": {
             "description": "internal server error"
+          },
+          "401": {
+            "description": "Access denied"
           }
         }
       },
+      "post": {
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "tags": ["Course"],
+        "summary": "Enroll course user",
+        "description": "Add course user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestEnrollCourse"
+              },
+              "examples": {
+                "success": {
+                  "value": {
+                    "status": "progress",
+                    "percentage": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "success": {
+                    "value": {
+                      "status": true,
+                      "message": "success enroll course",
+                      "data": {
+                        "id": "c84a71c9-526a-4622-9de2-22584f1690e2",
+                        "id_course": "c84a71c9-526a-4622-9de2",
+                        "id_user": "c84a71c9-526a-4622",
+                        "status": "progress",
+                        "percentage": 0
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error"
+          },
+          "401": {
+            "description": "Access denied"
+          }
+        }
+      },
+      "patch": {
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "tags": ["Course"],
+        "summary": "Update progress course user",
+        "description": "Update progress course user",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID course"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestEnrollCourse"
+              },
+              "examples": {
+                "success": {
+                  "value": {
+                    "status": "progress",
+                    "percentage": 0.5
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "success": {
+                    "value": {
+                      "status": true,
+                      "message": "success update progress course",
+                      "data": {
+                        "id": "c84a71c9-526a-4622-9de2-22584f1690e2",
+                        "id_course": "c84a71c9-526a-4622-9de2",
+                        "id_user": "c84a71c9-526a-4622",
+                        "status": "progress",
+                        "percentage": 0.5
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error"
+          },
+          "400": {
+            "description": "course not found"
+          },
+          "401": {
+            "description": "Access denied"
+          }
+        }
+      }
+    },
+    "/course/enroll": {
+      "get": {
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "tags": ["Course"],
+        "summary": "Get All Course enroll",
+        "description": "Get all course enrollments by user ID",
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error"
+          },
+          "401": {
+            "description": "Access denied"
+          }
+        }
+      }
+    },
+    "/course/{id}": {
+      "get": {
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "tags": ["Course"],
+        "summary": "Get course by ID",
+        "description": "Get course by ID course",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID course"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error"
+          },
+          "400": {
+            "description": "course not found"
+          },
+          "401": {
+            "description": "Access denied"
+          }
+        }
+      }
+    },
+    "/course/studentenroll": {
+      "get": {
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID course"
+          }
+        ],
+        "tags": ["Course"],
+        "summary": "API get all users who accessed course",
+        "description": "Get all users who accessed course",
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "examples": {
+                  "success": {
+                    "value": {
+                      "status": true,
+                      "message": "success get all users who accessed course",
+                      "data": [
+                        {
+                          "id": "c84a71c9-526a-4622-9de2-22584f1690e2",
+                          "id_user": "c84a71c9-526a-4622-9de2",
+                          "status": "progress",
+                          "percentage": 0.5
+                        },
+                        {
+                          "id": "c84a71c9-526a-4622-9de2-22584f1690e2",
+                          "id_user": "c84a71c9-526a-4622-9de2",
+                          "status": "done",
+                          "percentage": 100
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error"
+          },
+          "400": {
+            "description": "course not found"
+          },
+          "401": {
+            "description": "Access denied"
+          }
+        }
+      }
+    },
+
+    "/admin/courses": {
       "post": {
         "security": [
           {
@@ -227,29 +509,73 @@
                 }
               }
             }
+          },
+          "500": {
+            "description": "internal server error"
+          },
+          "401": {
+            "description": "Access denied"
           }
         }
       }
     },
-    "/course/{userId}/enroll": {
-      "get": {
+    "/admin/courses/{id}": {
+      "patch": {
         "security": [
           {
             "ApiKeyAuth": []
           }
         ],
         "tags": ["Course"],
-        "summary": "Get All Course enroll",
-        "description": "Get all course enrollments by user ID",
+        "summary": "Update course by admin",
+        "description": "Update course",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID course"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestCreateCourse"
+              },
+              "examples": {
+                "success": {
+                  "value": {
+                    "title": "Git dan Github",
+                    "department": "frontend & backend",
+                    "url_image": "https://image.com"
+                  }
+                }
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
-            "description": "success",
+            "description": "OK",
             "content": {
               "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
+                "examples": {
+                  "success": {
+                    "value": {
+                      "status": true,
+                      "message": "success update course",
+                      "data": {
+                        "id": "c84a71c9-526a-4622-9de2-22584f1690e2",
+                        "title": "Git dan Github",
+                        "department": "frontend & backend",
+                        "url_image": "https://image.com"
+                      }
+                    }
                   }
                 }
               }
@@ -257,33 +583,60 @@
           },
           "500": {
             "description": "internal server error"
+          },
+          "400": {
+            "description": "course not found"
+          },
+          "401": {
+            "description": "Access denied"
           }
         }
-      }
-    },
-    "/course/{id}": {
-      "get": {
+      },
+      "delete": {
         "security": [
           {
             "ApiKeyAuth": []
           }
         ],
         "tags": ["Course"],
-        "summary": "Get course by ID",
-        "description": "Get course by ID course",
+        "summary": "Delete course by admin",
+        "description": "Delete course",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID course"
+          }
+        ],
         "responses": {
           "200": {
-            "description": "success",
+            "description": "OK",
             "content": {
               "application/json": {
-                "schema": {
-                  "type": "string"
+                "examples": {
+                  "success": {
+                    "value": {
+                      "status": true,
+                      "message": "success delete course",
+                      "data": {}
+                    }
+                  }
                 }
               }
             }
           },
           "500": {
             "description": "internal server error"
+          },
+          "400": {
+            "description": "course not found"
+          },
+          "401": {
+            "description": "Access denied"
           }
         }
       }
@@ -335,13 +688,25 @@
             "type": "string"
           },
           "department": {
-            "type": "string"
+            "enum": ["frontend", "backend", "frontend & backend"]
           },
           "url_image": {
             "type": "string"
           }
         },
         "required": ["title", "department", "url_image"]
+      },
+      "RequestEnrollCourse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "percentage": {
+            "type": "number"
+          }
+        },
+        "required": ["status", "percentage"]
       }
     }
   }

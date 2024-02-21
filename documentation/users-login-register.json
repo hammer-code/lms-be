@@ -16,6 +16,10 @@
     {
       "name": "User",
       "description": "API user"
+    },
+    {
+      "name": "Course",
+      "description": "API course"
     }
   ],
   "paths": {
@@ -140,6 +144,145 @@
           }
         }
       }
+    },
+    "/courses": {
+      "get": {
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "tags": ["Course"],
+        "summary": "Get All Course",
+        "description": "Get all course ",
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error"
+          }
+        }
+      },
+      "post": {
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "tags": ["Course"],
+        "summary": "Create course by admin",
+        "description": "Add course",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestCreateCourse"
+              },
+              "examples": {
+                "success": {
+                  "value": {
+                    "title": "Git dan Github",
+                    "department": "frontend & backend",
+                    "url_image": "https://image.com"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "success": {
+                    "value": {
+                      "status": true,
+                      "message": "success add course",
+                      "data": {
+                        "id": "c84a71c9-526a-4622-9de2-22584f1690e2",
+                        "title": "Git dan Github",
+                        "department": "frontend & backend",
+                        "url_image": "https://image.com"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/course/{userId}/enroll": {
+      "get": {
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "tags": ["Course"],
+        "summary": "Get All Course enroll",
+        "description": "Get all course enrollments by user ID",
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error"
+          }
+        }
+      }
+    },
+    "/course/{id}": {
+      "get": {
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "tags": ["Course"],
+        "summary": "Get course by ID",
+        "description": "Get course by ID course",
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -180,6 +323,21 @@
           }
         },
         "required": ["user_name", "email", "password", "confirm_password"]
+      },
+      "RequestCreateCourse": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "department": {
+            "type": "string"
+          },
+          "url_image": {
+            "type": "string"
+          }
+        },
+        "required": ["title", "department", "url_image"]
       }
     }
   }

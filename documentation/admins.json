@@ -5,7 +5,6 @@
     "description": "Documentation whole API in this project",
     "version": "1.0.0"
   },
-
   "servers": [
     {
       "url": "http://localhost:8000/api/v2/",

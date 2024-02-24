@@ -23,7 +23,7 @@ func (us *usecase) Login(ctx context.Context, userReq domain.Login) (user domain
 	}
 
 	if err != nil {
-		logrus.Error("us.GetUsers: failed to get users. ", err)
+		logrus.Error("us.Login: failed to login. ", err)
 		return
 	}
 

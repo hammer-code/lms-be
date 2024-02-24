@@ -13,6 +13,7 @@ type (
 		CreateUser(ctx context.Context, userReq domain.User) (user domain.User, err error)
 		FindByEmail(ctx context.Context, email string) (user domain.User, err error)
 		LogoutUser(ctx context.Context, token string, expiredAt time.Time) error
+		ExpiredToken(ctx context.Context, token string) error
 	}
 	UserUsecase interface {
 		GetUsers(ctx context.Context) (users []domain.User, err error)

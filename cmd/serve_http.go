@@ -3,6 +3,7 @@ package cmd
 import (
 	"context"
 	"fmt"
+	"github.com/hammer-code/lms-be/app/middlewares"
 	"net/http"
 	"os"
 	"os/signal"
@@ -42,6 +43,7 @@ var serveHttpCmd = &cobra.Command{
 			}})
 
 		dbTx := pkgDB.NewDBTransaction(db)
+		jwtInstance := jwt.NewJwt(cfg.JWT_SECRET_KEY)
 
 		// repository
 		userRepo := users_repo.NewRepository(dbTx)
@@ -49,8 +51,14 @@ var serveHttpCmd = &cobra.Command{
 		// usecase
 		userUsecase := users_usecase.NewUsecase(userRepo, dbTx, jwt.NewJwt(cfg.JWT_SECRET_KEY))
 
+		// Middlewares
+		middleware := middlewares.Middleware{
+			Jwt:      jwtInstance,
+			UserRepo: userRepo,
+		}
+
 		// handler
-		userHandler := users_handler.NewHandler(userUsecase)
+		userHandler := users_handler.NewHandler(userUsecase, &middleware)
 
 		srv := &http.Server{
 			Addr: port(),
@@ -100,9 +108,14 @@ func registerHandler(h handler) *mux.Router {
 	router.HandleFunc("/health", health)
 
 	v1 := router.PathPrefix("/api/v1").Subrouter()
-	v1.HandleFunc("/register",h.userHandler.Register).Methods(http.MethodPost)
-	v1.HandleFunc("/users", h.userHandler.GetUsers).Methods(http.MethodGet)
+
+	protectedV1Route := v1.NewRoute().Subrouter()
+	protectedV1Route.Use(h.userHandler.Middleware.AuthMiddleware)
+
+	v1.HandleFunc("/register", h.userHandler.Register).Methods(http.MethodPost)
 	v1.HandleFunc("/login", h.userHandler.Login).Methods(http.MethodPost)
+
+	protectedV1Route.HandleFunc("/users", h.userHandler.GetUsers).Methods(http.MethodGet)
 
 	return router
 }

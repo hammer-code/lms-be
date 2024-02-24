@@ -7,11 +7,10 @@ import (
 )
 
 func (repo *repository) LogoutUser(ctx context.Context, token string, expiredAt time.Time) error {
-	err := repo.db.DB(ctx).Create(domain.LogoutToken{
+	err := repo.db.DB(ctx).Create(&domain.LogoutToken{
 		Token:     token,
 		ExpiredAt: expiredAt,
 		CreatedAt: time.Now(),
-		UpdatedAt: time.Now(),
 	}).Error
 
 	if err != nil {

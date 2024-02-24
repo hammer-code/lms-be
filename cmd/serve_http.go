@@ -116,6 +116,7 @@ func registerHandler(h handler) *mux.Router {
 	v1.HandleFunc("/login", h.userHandler.Login).Methods(http.MethodPost)
 
 	protectedV1Route.HandleFunc("/users", h.userHandler.GetUsers).Methods(http.MethodGet)
+	protectedV1Route.HandleFunc("/logout", h.userHandler.Logout).Methods(http.MethodPost)
 
 	return router
 }

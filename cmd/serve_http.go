@@ -90,7 +90,7 @@ func init() {
 	rootCmd.AddCommand(serveHttpCmd)
 }
 
-func health(w http.ResponseWriter, r *http.Request) {
+func health(w http.ResponseWriter, _ *http.Request) {
 	utils.Response(domain.HttpResponse{
 		Code:    200,
 		Message: "good",

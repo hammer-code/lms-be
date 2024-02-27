@@ -1,0 +1,627 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "LMS Hammercode",
+    "description": "Documentation whole API in this project",
+    "version": "1.0.0"
+  },
+
+  "servers": [
+    {
+      "url": "http://localhost:8000/api/v1/",
+      "description": "localhost"
+    }
+  ],
+  "tags": [
+    {
+      "name": "User",
+      "description": "API user"
+    },
+    {
+      "name": "Course",
+      "description": "API course"
+    },
+    {
+      "name": "Module",
+      "description": "API Module"
+    }
+  ],
+  "paths": {
+    "/users": {
+      "get": {
+        "tags": ["User"],
+        "summary": "Get All Users",
+        "description": "Get all users in database postgres ",
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error"
+          }
+        }
+      }
+    },
+    "/users/": {
+      "post": {
+        "tags": ["User"],
+        "summary": "login for user",
+        "description": "",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestLogin"
+              },
+              "examples": {
+                "user": {
+                  "value": {
+                    "email": "student@gmail.com",
+                    "password": "student123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "success": {
+                    "value": {
+                      "status": true,
+                      "message": "success login",
+                      "data": {
+                        "id": "c84a71c9-526a-4622-9de2-22584f1690e2",
+                        "fullname": "student",
+                        "email": "student@gmail.com",
+                        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3MDAxMDQzOTksImlkIjoiYzg0YTcxYzktNTI2YS00NjIyLTlkZTItMjI1ODRmMTY5MGUyIiwicm9sZSI6IiJ9.cd68WXniUznvZKcoYNmadSs25yYfep80JLF-RlPLw90"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/register": {
+      "post": {
+        "tags": ["User"],
+        "summary": "register user",
+        "description": "register  for user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestRegister"
+              },
+              "examples": {
+                "success": {
+                  "value": {
+                    "user_name": "student",
+                    "email": "student@gmail.com",
+                    "password": "student123",
+                    "confirm_password": "student123"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "success": {
+                    "value": {
+                      "status": true,
+                      "message": "success register",
+                      "data": {
+                        "id": "c84a71c9-526a-4622-9de2-22584f1690e2",
+                        "user_name": "student",
+                        "email": "student@gmail.com"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/courses": {
+      "get": {
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "tags": ["Course"],
+        "summary": "Get All Course",
+        "description": "Get all course ",
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error"
+          },
+          "401": {
+            "description": "Access denied"
+          }
+        }
+      },
+      "post": {
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "tags": ["Course"],
+        "summary": "Enroll course user",
+        "description": "Add course user",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestEnrollCourse"
+              },
+              "examples": {
+                "success": {
+                  "value": {
+                    "status": "progress",
+                    "percentage": 0
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "success": {
+                    "value": {
+                      "status": true,
+                      "message": "success enroll course",
+                      "data": {
+                        "id": "c84a71c9-526a-4622-9de2-22584f1690e2",
+                        "id_course": "c84a71c9-526a-4622-9de2",
+                        "id_user": "c84a71c9-526a-4622",
+                        "status": "progress",
+                        "percentage": 0
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error"
+          },
+          "401": {
+            "description": "Access denied"
+          }
+        }
+      },
+      "patch": {
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "tags": ["Course"],
+        "summary": "Update progress course user",
+        "description": "Update progress course user",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID course"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestEnrollCourse"
+              },
+              "examples": {
+                "success": {
+                  "value": {
+                    "status": "progress",
+                    "percentage": 0.5
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "success": {
+                    "value": {
+                      "status": true,
+                      "message": "success update progress course",
+                      "data": {
+                        "id": "c84a71c9-526a-4622-9de2-22584f1690e2",
+                        "id_course": "c84a71c9-526a-4622-9de2",
+                        "id_user": "c84a71c9-526a-4622",
+                        "status": "progress",
+                        "percentage": 0.5
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error"
+          },
+          "400": {
+            "description": "course not found"
+          },
+          "401": {
+            "description": "Access denied"
+          }
+        }
+      }
+    },
+    "/course/enroll": {
+      "get": {
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "tags": ["Course"],
+        "summary": "Get All Course enroll",
+        "description": "Get all course enrollments by user ID",
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error"
+          },
+          "401": {
+            "description": "Access denied"
+          }
+        }
+      }
+    },
+    "/course/{id}": {
+      "get": {
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "tags": ["Course"],
+        "summary": "Get course by ID",
+        "description": "Get course by ID course",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID course"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error"
+          },
+          "400": {
+            "description": "course not found"
+          },
+          "401": {
+            "description": "Access denied"
+          }
+        }
+      }
+    },
+    "/course/studentenroll": {
+      "get": {
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID course"
+          }
+        ],
+        "tags": ["Course"],
+        "summary": "API get all users who accessed course",
+        "description": "Get all users who accessed course",
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "examples": {
+                  "success": {
+                    "value": {
+                      "status": true,
+                      "message": "success get all users who accessed course",
+                      "data": [
+                        {
+                          "id": "c84a71c9-526a-4622-9de2-22584f1690e2",
+                          "id_user": "c84a71c9-526a-4622-9de2",
+                          "status": "progress",
+                          "percentage": 0.5
+                        },
+                        {
+                          "id": "c84a71c9-526a-4622-9de2-22584f1690e2",
+                          "id_user": "c84a71c9-526a-4622-9de2",
+                          "status": "done",
+                          "percentage": 100
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error"
+          },
+          "400": {
+            "description": "course not found"
+          },
+          "401": {
+            "description": "Access denied"
+          }
+        }
+      }
+    },
+    "/modules/{id}/Modules": {
+      "get": {
+        "tags": ["Module"],
+        "summary": "Get All Modules",
+        "description": "Get all Modules by Course id ",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AllModules"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/modules/{id}": {
+      "get": {
+        "tags": ["Module"],
+        "summary": "Get Detail Modules",
+        "description": "Get Detail Modules by module id ",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailModule"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization"
+      }
+    },
+    "schemas": {
+      "RequestLogin": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "required": ["email", "password"]
+      },
+      "RequestRegister": {
+        "type": "object",
+        "properties": {
+          "user_name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "confirm_password": {
+            "type": "string"
+          }
+        },
+        "required": ["user_name", "email", "password", "confirm_password"]
+      },
+      "RequestCreateCourse": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "department": {
+            "enum": ["frontend", "backend", "frontend & backend"]
+          },
+          "url_image": {
+            "type": "string"
+          }
+        },
+        "required": ["title", "department", "url_image"]
+      },
+      "RequestEnrollCourse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "percentage": {
+            "type": "number"
+          }
+        },
+        "required": ["status", "percentage"]
+      },
+      "AllModules": {
+        "type": "object",
+        "properties": {
+          "course_id": {
+            "type": "string"
+          },
+          "modules": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "title_module": {
+                "type": "string"
+              },
+              "description_module": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "DetailModule": {
+        "id": {
+          "type": "string"
+        },
+        "title_module": {
+          "type": "string"
+        },
+        "description_module": {
+          "type": "string"
+        }
+      }
+    },
+    "parameters": {
+      "Id": {
+        "name": "id",
+        "in": "path",
+        "description": "id data",
+        "required": true,
+        "schema": {
+          "type": "string"
+        },
+        "examples": {
+          "course": {
+            "value": "A1"
+          }
+        }
+      }
+    }
+  }
+}

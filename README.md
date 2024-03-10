@@ -11,6 +11,7 @@ These instructions will get your copy of the project up and running on your loca
 ### Prerequisites
 
 Before you begin, ensure you have the following installed:
+
 - Go (version 1.19 or later recommended)
 - Any other dependencies your project might need (e.g., PostgreSQL, Docker if applicable)
 
@@ -22,13 +23,13 @@ To set up your environment variables:
 
 1. Copy the `.env.example` file to a new file named `.env` in the same directory:
 
-    ```bash
-    cp .env.example .env
-    ```
+   ```bash
+   cp .env.example .env
+   ```
 
 2. Open the `.env` file in your preferred text editor and modify the environment variables to fit your development environment.
 
-    Make sure to replace placeholder values with actual data where necessary.
+   Make sure to replace placeholder values with actual data where necessary.
 
 ### Running the Service
 
@@ -44,8 +45,23 @@ make serve-http
 
 This command is configured in your Makefile to set up necessary environment variables, compile the code, and run the service, making it ready to accept requests from lms-fe.
 
+#### Running Docker
+This command is useful for running a database in a container in Docker
+```bash
+docker-compose up -d
+```
+
+#### Database Migrate
+
+This command is useful for migrating databases on table plus
+```bash
+go run main.go migrate
+```
+
 #### Using Go Directly
+
 Alternatively, you can run the service directly using Go with the following command:
+
 ```bash
 go run main.go http
 ```

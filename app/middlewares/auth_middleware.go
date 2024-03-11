@@ -1,10 +1,11 @@
 package middlewares
 
 import (
-	"github.com/hammer-code/lms-be/domain"
-	"github.com/hammer-code/lms-be/utils"
 	"net/http"
 	"strconv"
+
+	"github.com/hammer-code/lms-be/domain"
+	"github.com/hammer-code/lms-be/utils"
 )
 
 func (m *Middleware) AuthMiddleware(next http.Handler) http.Handler {

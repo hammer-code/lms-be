@@ -10,6 +10,7 @@ import (
 	"syscall"
 
 	"github.com/gorilla/mux"
+	muxHandlers "github.com/gorilla/handlers"
 	users_handler "github.com/hammer-code/lms-be/app/users/delivery/http"
 	users_repo "github.com/hammer-code/lms-be/app/users/repository"
 	users_usecase "github.com/hammer-code/lms-be/app/users/usecase"
@@ -105,6 +106,8 @@ type handler struct {
 func registerHandler(h handler) *mux.Router {
 
 	router := mux.NewRouter()
+	router.Use(muxHandlers.CORS())
+
 	router.HandleFunc("/health", health)
 
 	v1 := router.PathPrefix("/api/v1").Subrouter()

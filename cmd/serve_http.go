@@ -3,12 +3,14 @@ package cmd
 import (
 	"context"
 	"fmt"
-	"github.com/hammer-code/lms-be/app/middlewares"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 
+	"github.com/hammer-code/lms-be/app/middlewares"
+
+	muxHandlers "github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	users_handler "github.com/hammer-code/lms-be/app/users/delivery/http"
 	users_repo "github.com/hammer-code/lms-be/app/users/repository"
@@ -60,11 +62,22 @@ var serveHttpCmd = &cobra.Command{
 		// handler
 		userHandler := users_handler.NewHandler(userUsecase, &middleware)
 
+		// route
+		router := registerHandler(handler{
+			userHandler: userHandler,
+		})
+
+		// build cors
+		muxCorsWithRouter := muxHandlers.CORS(
+			muxHandlers.AllowCredentials(),
+			muxHandlers.AllowedHeaders(cfg.CORS_ALLOWED_HEADERS),
+			muxHandlers.AllowedMethods(cfg.CORS_ALLOWED_METHODS),
+			muxHandlers.AllowedOrigins(cfg.CORS_ALLOWED_ORIGINS),
+		)(router)
+
 		srv := &http.Server{
-			Addr: port(),
-			Handler: registerHandler(handler{
-				userHandler: userHandler,
-			}),
+			Addr:    port(),
+			Handler: muxCorsWithRouter,
 		}
 
 		go func() {
@@ -105,6 +118,7 @@ type handler struct {
 func registerHandler(h handler) *mux.Router {
 
 	router := mux.NewRouter()
+
 	router.HandleFunc("/health", health)
 
 	v1 := router.PathPrefix("/api/v1").Subrouter()

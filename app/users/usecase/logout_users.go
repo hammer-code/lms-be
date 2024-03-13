@@ -8,9 +8,5 @@ func (us *usecase) Logout(ctx context.Context, token string) error {
 		return err
 	}
 
-	err = us.dbTX.StartTransaction(ctx, func(txCtx context.Context) error {
-		return us.userRepo.LogoutUser(txCtx, token, jwtData.ExpiresAt.Time)
-	})
-
-	return err
+	return us.userRepo.LogoutUser(ctx, token, jwtData.ExpiresAt.Time)
 }

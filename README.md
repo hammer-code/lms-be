@@ -50,8 +50,3 @@ Alternatively, you can run the service directly using Go with the following comm
 go run main.go http
 ```
 
-
-#### SWAGGER LOCAL
-```
-
-```

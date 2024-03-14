@@ -47,17 +47,12 @@ var serveHttpCmd = &cobra.Command{
 			}})
 
 		dbTx := pkgDB.NewDBTransaction(db)
-<<<<<<< HEAD
-=======
 		jwtInstance := jwt.NewJwt(cfg.JWT_SECRET_KEY)
 
->>>>>>> e19a1634ec2cc984f5d69a0df4c3c8e8550747aa
 		// repository
 		userRepo := users_repo.NewRepository(dbTx)
 		// usecase
 		userUsecase := users_usecase.NewUsecase(userRepo, dbTx, jwt.NewJwt(cfg.JWT_SECRET_KEY))
-<<<<<<< HEAD
-=======
 
 		// Middlewares
 		middleware := middlewares.Middleware{
@@ -65,7 +60,6 @@ var serveHttpCmd = &cobra.Command{
 			UserRepo: userRepo,
 		}
 
->>>>>>> e19a1634ec2cc984f5d69a0df4c3c8e8550747aa
 		// handler
 		userHandler := users_handler.NewHandler(userUsecase, &middleware)
 

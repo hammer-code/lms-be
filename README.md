@@ -49,3 +49,9 @@ Alternatively, you can run the service directly using Go with the following comm
 ```bash
 go run main.go http
 ```
+
+
+#### SWAGGER LOCAL
+```
+
+```

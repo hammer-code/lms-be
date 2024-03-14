@@ -294,7 +294,7 @@
         }
       }
     },
-    "course/{id}/modules": {
+    "/course/{id}/modules": {
       "get": {
         "tags": ["Module"],
         "summary": "Get All Modules",

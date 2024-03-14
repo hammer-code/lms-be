@@ -8,6 +8,9 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/hammer-code/lms-be/app/middlewares"
+
+	muxHandlers "github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	users_handler "github.com/hammer-code/lms-be/app/users/delivery/http"
 	users_repo "github.com/hammer-code/lms-be/app/users/repository"
@@ -44,18 +47,44 @@ var serveHttpCmd = &cobra.Command{
 			}})
 
 		dbTx := pkgDB.NewDBTransaction(db)
+<<<<<<< HEAD
+=======
+		jwtInstance := jwt.NewJwt(cfg.JWT_SECRET_KEY)
+
+>>>>>>> e19a1634ec2cc984f5d69a0df4c3c8e8550747aa
 		// repository
 		userRepo := users_repo.NewRepository(dbTx)
 		// usecase
 		userUsecase := users_usecase.NewUsecase(userRepo, dbTx, jwt.NewJwt(cfg.JWT_SECRET_KEY))
+<<<<<<< HEAD
+=======
+
+		// Middlewares
+		middleware := middlewares.Middleware{
+			Jwt:      jwtInstance,
+			UserRepo: userRepo,
+		}
+
+>>>>>>> e19a1634ec2cc984f5d69a0df4c3c8e8550747aa
 		// handler
-		userHandler := users_handler.NewHandler(userUsecase)
+		userHandler := users_handler.NewHandler(userUsecase, &middleware)
+
+		// route
+		router := registerHandler(handler{
+			userHandler: userHandler,
+		})
+
+		// build cors
+		muxCorsWithRouter := muxHandlers.CORS(
+			muxHandlers.AllowCredentials(),
+			muxHandlers.AllowedHeaders(cfg.CORS_ALLOWED_HEADERS),
+			muxHandlers.AllowedMethods(cfg.CORS_ALLOWED_METHODS),
+			muxHandlers.AllowedOrigins(cfg.CORS_ALLOWED_ORIGINS),
+		)(router)
 
 		srv := &http.Server{
-			Addr: port(),
-			Handler: registerHandler(handler{
-				userHandler: userHandler,
-			}),
+			Addr:    port(),
+			Handler: muxCorsWithRouter,
 		}
 
 		go func() {
@@ -114,7 +143,7 @@ func init() {
 
 }
 
-func health(w http.ResponseWriter, r *http.Request) {
+func health(w http.ResponseWriter, _ *http.Request) {
 	utils.Response(domain.HttpResponse{
 		Code:    200,
 		Message: "good",
@@ -129,15 +158,21 @@ type handler struct {
 func registerHandler(h handler) *mux.Router {
 
 	router := mux.NewRouter()
+
 	router.HandleFunc("/health", health)
 
 	doc := router.PathPrefix("/user")
 	doc.Handler(httpSwagger.WrapHandler)
 
 	v1 := router.PathPrefix("/api/v1").Subrouter()
+	protectedV1Route := v1.NewRoute().Subrouter()
+	protectedV1Route.Use(h.userHandler.Middleware.AuthMiddleware)
+
 	v1.HandleFunc("/register", h.userHandler.Register).Methods(http.MethodPost)
-	v1.HandleFunc("/users", h.userHandler.GetUsers).Methods(http.MethodGet)
 	v1.HandleFunc("/login", h.userHandler.Login).Methods(http.MethodPost)
+
+	protectedV1Route.HandleFunc("/users", h.userHandler.GetUsers).Methods(http.MethodGet)
+	protectedV1Route.HandleFunc("/logout", h.userHandler.Logout).Methods(http.MethodPost)
 
 	return router
 }

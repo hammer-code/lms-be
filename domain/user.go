@@ -4,11 +4,11 @@ import "time"
 
 type (
 	User struct {
-		ID        int    `gorm:"primaryKey" json:"id"`
-		Username  string `json:"username" gorm:"type:varchar(255);not null"`
-		Email     string `json:"email" gorm:"type:varchar(255);not null"`
-		Password  string `json:"password" gorm:"type:varchar(255);not null"`
-		Role      string  `json:"role"`
+		ID        int       `gorm:"primaryKey" json:"id"`
+		Username  string    `json:"username" gorm:"type:varchar(255);not null;unique"`
+		Email     string    `json:"email" gorm:"type:varchar(255);not null;unique"`
+		Password  string    `json:"password" gorm:"type:varchar(255);not null"`
+		Role      string    `json:"role"`
 		CreatedAt time.Time `json:"created_at"`
 		UpdatedAt time.Time `json:"updated_at"`
 	}

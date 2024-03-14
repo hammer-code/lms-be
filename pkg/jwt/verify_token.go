@@ -1,18 +1,12 @@
 package jwt
 
 import (
-	"errors"
-
 	"github.com/golang-jwt/jwt/v5"
 )
 
 func (j *jwtConfig) VerifyToken(token string) (*JwtCustomClaims, error) {
-	tkn, err := jwt.Parse(token, func(t *jwt.Token) (interface{}, error) {
-		if !t.Valid {
-			return nil, errors.New("sign in to proceed")
-		}
-
-		return t, nil
+	tkn, err := jwt.ParseWithClaims(token, &JwtCustomClaims{}, func(token *jwt.Token) (interface{}, error) {
+		return []byte(j.SecretKey), nil
 	})
 
 	if err != nil {
@@ -21,4 +15,3 @@ func (j *jwtConfig) VerifyToken(token string) (*JwtCustomClaims, error) {
 
 	return tkn.Claims.(*JwtCustomClaims), nil
 }
-

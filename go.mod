@@ -5,6 +5,7 @@ go 1.19
 require github.com/golang-jwt/jwt/v5 v5.2.0
 
 require (
+<<<<<<< HEAD
 	github.com/KyleBanks/depth v1.2.1 // indirect
 	github.com/PuerkitoBio/purell v1.1.1 // indirect
 	github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578 // indirect
@@ -13,6 +14,15 @@ require (
 	github.com/go-openapi/jsonreference v0.21.0 // indirect
 	github.com/go-openapi/spec v0.21.0 // indirect
 	github.com/go-openapi/swag v0.23.0 // indirect
+=======
+	github.com/golang-jwt/jwt/v5 v5.2.0
+	github.com/gorilla/handlers v1.5.2
+)
+
+require (
+	github.com/felixge/httpsnoop v1.0.3 // indirect
+	github.com/fsnotify/fsnotify v1.7.0 // indirect
+>>>>>>> e19a1634ec2cc984f5d69a0df4c3c8e8550747aa
 	github.com/gorilla/mux v1.8.1 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect

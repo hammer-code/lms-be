@@ -1,28 +1,29 @@
 package http
 
 import (
-	"net/http"
-
 	"github.com/hammer-code/lms-be/domain"
 	"github.com/hammer-code/lms-be/utils"
-	"github.com/sirupsen/logrus"
+	"net/http"
 )
 
-func (h Handler) GetUsers(w http.ResponseWriter, r *http.Request) {
-	users, err := h.usecase.GetUsers(r.Context())
+func (h Handler) Logout(w http.ResponseWriter, r *http.Request) {
+	token := utils.ExtractBearerToken(r)
 
+	err := h.usecase.Logout(r.Context(), *token)
 	if err != nil {
-		logrus.Error("userUsecase: failed to get users")
 		utils.Response(domain.HttpResponse{
 			Code:    500,
 			Message: err.Error(),
+			Data:    nil,
 		}, w)
 		return
 	}
 
 	utils.Response(domain.HttpResponse{
 		Code:    200,
-		Message: "success",
-		Data:    users,
+		Message: "successfuly logged out",
+		Data: map[string]string{
+			"token": *token,
+		},
 	}, w)
 }

@@ -369,6 +369,83 @@
           }
         }
       }
+    },
+    "/task": {
+      "get": {
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "tags": ["Task"],
+        "summary": "Get All Task",
+        "description": "Get all task",
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error"
+          },
+          "401": {
+            "description": "access denied"
+          }
+        }
+      }
+    },
+    "/task/{id}": {
+      "get": {
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "tags": ["Task"],
+        "summary": "Get task by ID",
+        "description": "Get task by ID task",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID course"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error"
+          },
+          "400": {
+            "description": "course not found"
+          },
+          "401": {
+            "description": "access denied"
+          }
+        }
+      }
     }
   },
   "components": {

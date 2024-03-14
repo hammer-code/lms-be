@@ -1,5 +1,5 @@
 {
-  "openapi": "3.1.0",
+  "openapi": "3.0.0",
   "info": {
     "title": "LMS Hammercode",
     "description": "Documentation whole API in this project",
@@ -8,7 +8,7 @@
 
   "servers": [
     {
-      "url": "http://localhost:8000/api/v1/",
+      "url": "http://localhost:8000",
       "description": "localhost"
     }
   ],
@@ -27,7 +27,7 @@
     }
   ],
   "paths": {
-    "/users": {
+    "/api/v1/users": {
       "get": {
         "tags": ["User"],
         "summary": "Get All Users",
@@ -100,7 +100,7 @@
         }
       }
     },
-    "/users/register": {
+    "/api/v1/register": {
       "post": {
         "tags": ["User"],
         "summary": "register user",

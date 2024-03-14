@@ -19,6 +19,8 @@ import (
 	"github.com/hammer-code/lms-be/utils"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	httpSwagger "github.com/swaggo/http-swagger"
+	"github.com/swaggo/swag"
 	"gorm.io/driver/postgres"
 )
 
@@ -42,13 +44,10 @@ var serveHttpCmd = &cobra.Command{
 			}})
 
 		dbTx := pkgDB.NewDBTransaction(db)
-
 		// repository
 		userRepo := users_repo.NewRepository(dbTx)
-
 		// usecase
 		userUsecase := users_usecase.NewUsecase(userRepo, dbTx, jwt.NewJwt(cfg.JWT_SECRET_KEY))
-
 		// handler
 		userHandler := users_handler.NewHandler(userUsecase)
 
@@ -78,8 +77,41 @@ var serveHttpCmd = &cobra.Command{
 	},
 }
 
+// func LoadJSON(path string) string {
+// 	jsonBytes, err := os.ReadFile(path)
+
+// 	// jsonBytes, err := os.ReadFile("documentation/users.json")
+// 	if err != nil {
+// 		fmt.Println("Error reading JSON file:", err)
+// 		return ""
+// 	}
+// 	return string(jsonBytes)
+// }
+
+func LoadJSON(path string) string {
+	jsonBytes, err := os.ReadFile(path)
+
+	// jsonBytes, err := os.ReadFile("documentation/users.json")
+	if err != nil {
+		fmt.Println("Error reading JSON file:", err)
+		return ""
+	}
+	return string(jsonBytes)
+}
+
+func LoadSwagger() {
+	userTemplate := LoadJSON("documentation/users.json")
+	var UsersSwaggerInfo = &swag.Spec{
+		InfoInstanceName: "swagger",
+		SwaggerTemplate:  userTemplate,
+	}
+	swag.Register(UsersSwaggerInfo.InstanceName(), UsersSwaggerInfo)
+}
+
 func init() {
+	LoadSwagger()
 	rootCmd.AddCommand(serveHttpCmd)
+
 }
 
 func health(w http.ResponseWriter, r *http.Request) {
@@ -99,8 +131,11 @@ func registerHandler(h handler) *mux.Router {
 	router := mux.NewRouter()
 	router.HandleFunc("/health", health)
 
+	doc := router.PathPrefix("/user")
+	doc.Handler(httpSwagger.WrapHandler)
+
 	v1 := router.PathPrefix("/api/v1").Subrouter()
-	v1.HandleFunc("/register",h.userHandler.Register).Methods(http.MethodPost)
+	v1.HandleFunc("/register", h.userHandler.Register).Methods(http.MethodPost)
 	v1.HandleFunc("/users", h.userHandler.GetUsers).Methods(http.MethodGet)
 	v1.HandleFunc("/login", h.userHandler.Login).Methods(http.MethodPost)
 

@@ -42,7 +42,7 @@ func (h Handler) Register(w http.ResponseWriter, r *http.Request) {
 	resultUser, err := h.usecase.Register(r.Context(), userInput)
 	if err != nil {
 		logrus.Error("userUsecase: failed to register user")
-		resp, ok := utils.CheckError(err.Error(), "duplicate", "user already exist")
+		resp, ok := utils.CheckError(err.Error(), "duplicate", "User already exist")
 		if ok {
 			utils.Response(resp, w)
 			return

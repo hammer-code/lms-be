@@ -2,10 +2,11 @@ package http
 
 import (
 	"encoding/json"
-	"github.com/hammer-code/lms-be/domain"
-	"github.com/hammer-code/lms-be/utils"
 	"io"
 	"net/http"
+
+	"github.com/hammer-code/lms-be/domain"
+	"github.com/hammer-code/lms-be/utils"
 )
 
 func (h Handler) Login(w http.ResponseWriter, r *http.Request) {
@@ -28,17 +29,9 @@ func (h Handler) Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	_, token, err := h.usecase.Login(r.Context(), loginInstance)
-
 	if err != nil {
-		resp, ok := utils.CheckError(err.Error(), "password", "Sorry your password is incorrect")
-		if ok {
-			utils.Response(resp, w)
-			return
-		}
-		utils.Response(domain.HttpResponse{
-			Code:    500,
-			Message: err.Error(),
-		}, w)
+		resp := utils.CostumErr(err.Error())
+		utils.Response(resp, w)
 		return
 	}
 

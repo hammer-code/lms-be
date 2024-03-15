@@ -30,6 +30,11 @@ func (h Handler) Login(w http.ResponseWriter, r *http.Request) {
 	_, token, err := h.usecase.Login(r.Context(), loginInstance)
 
 	if err != nil {
+		resp, ok := utils.CheckError(err.Error(), "password", "Sorry your password is incorrect")
+		if ok {
+			utils.Response(resp, w)
+			return
+		}
 		utils.Response(domain.HttpResponse{
 			Code:    500,
 			Message: err.Error(),
@@ -39,7 +44,7 @@ func (h Handler) Login(w http.ResponseWriter, r *http.Request) {
 
 	utils.Response(domain.HttpResponse{
 		Code:    200,
-		Message: "success",
+		Message: "Login successfully",
 		Data:    token,
 	}, w)
 }

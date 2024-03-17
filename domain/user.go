@@ -45,7 +45,7 @@ type (
 	}
 )
 
-// define gorm table of struct
+
 func (User) TableName() string {
 	return "users"
 }
@@ -55,5 +55,19 @@ func RegistToUser(r Register) User {
 		Username: r.Username,
 		Email:    r.Email,
 		Password: r.Password,
+	}
+}
+
+func UserUpdateProfileToUser(u UserUpdateProfile) User {
+	return User{
+
+		Fullname:    u.Fullname,
+		DateOfBirth: u.DateOfBirth,
+		Gender:      u.Gender,
+		PhoneNumber: u.PhoneNumber,
+		Address:     u.Address,
+		Github:      u.Github,
+		Linkedin:    u.Linkedin,
+		PersonalWeb: u.PersonalWeb,
 	}
 }

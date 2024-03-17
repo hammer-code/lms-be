@@ -22,7 +22,7 @@ func (h Handler) UpdateProfileUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	id, err:=jwt.ExtractToken(authorizationHeader, config.GetConfig().JWT_SECRET_KEY)
+	claims, err:=jwt.ParseToken(authorizationHeader, config.GetConfig().JWT_SECRET_KEY)
 	if err !=nil{
 		utils.Response(domain.HttpResponse{
 			Code:    500,
@@ -51,7 +51,7 @@ func (h Handler) UpdateProfileUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = h.usecase.UpdateProfileUser(r.Context(), userUpdate, id)
+	err = h.usecase.UpdateProfileUser(r.Context(), userUpdate, claims.ID)
 
 	if err != nil {
 		logrus.Error("userUsecase: failed to update users")

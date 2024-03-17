@@ -22,10 +22,11 @@ type (
 	}
 
 	UserUpdateProfile struct {
-		Fullname    string    `json:"fullname" gorm:"type:varchar(255);not null"`
-		DateOfBirth time.Time `json:"date_of_birth" gorm:"type:date;not null"`
-		Gender      string    `json:"gender" gorm:"type:varchar(255);not null"`
-		PhoneNumber string    `json:"phone_number" gorm:"type:varchar(255); not null"`
+		Username    string    `json:"username"`
+		Fullname    string    `json:"fullname"`
+		DateOfBirth time.Time `json:"date_of_birth"`
+		Gender      string    `json:"gender"`
+		PhoneNumber string    `json:"phone_number"`
 		Address     string    `json:"address"`
 		Github      string    `json:"github"`
 		Linkedin    string    `json:"linkedin"`
@@ -60,7 +61,7 @@ func RegistToUser(r Register) User {
 
 func UserUpdateProfileToUser(u UserUpdateProfile) User {
 	return User{
-
+Username: u.Username,
 		Fullname:    u.Fullname,
 		DateOfBirth: u.DateOfBirth,
 		Gender:      u.Gender,

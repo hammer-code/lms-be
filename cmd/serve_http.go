@@ -22,6 +22,8 @@ import (
 	"github.com/hammer-code/lms-be/utils"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	httpSwagger "github.com/swaggo/http-swagger"
+	"github.com/swaggo/swag"
 	"gorm.io/driver/postgres"
 )
 
@@ -49,7 +51,6 @@ var serveHttpCmd = &cobra.Command{
 
 		// repository
 		userRepo := users_repo.NewRepository(dbTx)
-
 		// usecase
 		userUsecase := users_usecase.NewUsecase(userRepo, dbTx, jwt.NewJwt(cfg.JWT_SECRET_KEY))
 
@@ -99,8 +100,41 @@ var serveHttpCmd = &cobra.Command{
 	},
 }
 
+// func LoadJSON(path string) string {
+// 	jsonBytes, err := os.ReadFile(path)
+
+// 	// jsonBytes, err := os.ReadFile("documentation/users.json")
+// 	if err != nil {
+// 		fmt.Println("Error reading JSON file:", err)
+// 		return ""
+// 	}
+// 	return string(jsonBytes)
+// }
+
+func LoadJSON(path string) string {
+	jsonBytes, err := os.ReadFile(path)
+
+	// jsonBytes, err := os.ReadFile("documentation/users.json")
+	if err != nil {
+		fmt.Println("Error reading JSON file:", err)
+		return ""
+	}
+	return string(jsonBytes)
+}
+
+func LoadSwagger() {
+	userTemplate := LoadJSON("documentation/users.json")
+	var UsersSwaggerInfo = &swag.Spec{
+		InfoInstanceName: "swagger",
+		SwaggerTemplate:  userTemplate,
+	}
+	swag.Register(UsersSwaggerInfo.InstanceName(), UsersSwaggerInfo)
+}
+
 func init() {
+	LoadSwagger()
 	rootCmd.AddCommand(serveHttpCmd)
+
 }
 
 func health(w http.ResponseWriter, _ *http.Request) {
@@ -121,8 +155,10 @@ func registerHandler(h handler) *mux.Router {
 
 	router.HandleFunc("/health", health)
 
-	v1 := router.PathPrefix("/api/v1").Subrouter()
+	doc := router.PathPrefix("/user")
+	doc.Handler(httpSwagger.WrapHandler)
 
+	v1 := router.PathPrefix("/api/v1").Subrouter()
 	protectedV1Route := v1.NewRoute().Subrouter()
 	protectedV1Route.Use(h.userHandler.Middleware.AuthMiddleware)
 

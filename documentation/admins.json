@@ -1,0 +1,562 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "LMS Hammercode",
+    "description": "Documentation whole API in this project",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8000/api/v2/",
+      "description": "localhost"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Module",
+      "description": "API Module"
+    }
+  ],
+  "paths": {
+    "/admin/courses": {
+      "post": {
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "tags": ["Course"],
+        "summary": "Create course by admin",
+        "description": "Add course",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestCreateCourse"
+              },
+              "examples": {
+                "success": {
+                  "value": {
+                    "title": "Git dan Github",
+                    "department": "frontend & backend",
+                    "url_image": "https://image.com"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "success": {
+                    "value": {
+                      "status": true,
+                      "message": "success add course",
+                      "data": {
+                        "id": "c84a71c9-526a-4622-9de2-22584f1690e2",
+                        "title": "Git dan Github",
+                        "department": "frontend & backend",
+                        "url_image": "https://image.com"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error"
+          },
+          "401": {
+            "description": "Access denied"
+          }
+        }
+      }
+    },
+    "/admin/courses/{id}": {
+      "patch": {
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "tags": ["Course"],
+        "summary": "Update course by admin",
+        "description": "Update course",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID course"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestCreateCourse"
+              },
+              "examples": {
+                "success": {
+                  "value": {
+                    "title": "Git dan Github",
+                    "department": "frontend & backend",
+                    "url_image": "https://image.com"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "success": {
+                    "value": {
+                      "status": true,
+                      "message": "success update course",
+                      "data": {
+                        "id": "c84a71c9-526a-4622-9de2-22584f1690e2",
+                        "title": "Git dan Github",
+                        "department": "frontend & backend",
+                        "url_image": "https://image.com"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error"
+          },
+          "400": {
+            "description": "course not found"
+          },
+          "401": {
+            "description": "Access denied"
+          }
+        }
+      },
+      "delete": {
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "tags": ["Course"],
+        "summary": "Delete course by admin",
+        "description": "Delete course",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID course"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "success": {
+                    "value": {
+                      "status": true,
+                      "message": "success delete course",
+                      "data": {}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error"
+          },
+          "400": {
+            "description": "course not found"
+          },
+          "401": {
+            "description": "Access denied"
+          }
+        }
+      }
+    },
+    "/admins/Modules/{id}": {
+      "post": {
+        "tags": ["Module"],
+        "summary": "Create Module ",
+        "description": "create module with id course",
+        "parameters": [
+          {
+            "description": "use id course",
+            "$ref": "#/components/parameters/Id"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestModules"
+              },
+              "examples": {
+                "user": {
+                  "value": {
+                    "title_module": "introduction html",
+                    "description_module": "lorem ipsum"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "success": {
+                    "value": {
+                      "status": true,
+                      "message": "success create module"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["Module"],
+        "summary": "Update Module",
+        "description": "update module for the course",
+        "parameters": [
+          {
+            "description": "use id module",
+            "$ref": "#/components/parameters/Id"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RequestModules"
+              },
+              "examples": {
+                "user": {
+                  "value": {
+                    "title_module": "introduction html",
+                    "description_module": "lorem ipsum"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "success": {
+                    "value": {
+                      "status": true,
+                      "message": "success update module"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/course/{id}/modules": {
+      "get": {
+        "tags": ["Module"],
+        "summary": "Get All Modules",
+        "description": "Get all Modules by Course id ",
+        "parameters": [
+          {
+            "description": "use id course",
+            "$ref": "#/components/parameters/Id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AllModules"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/modules/{id}": {
+      "get": {
+        "tags": ["Module"],
+        "summary": "Get Detail Modules",
+        "description": "Get Detail Modules by module id ",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DetailModule"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Module"],
+        "summary": "Delete Module by id",
+        "description": "Delete modul by module id ",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/Id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "succes": {
+                    "value": {
+                      "status": true,
+                      "message": "success deleted admin"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/task": {
+      "get": {
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "tags": ["Task"],
+        "summary": "Get All Task",
+        "description": "Get all task",
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error"
+          },
+          "401": {
+            "description": "access denied"
+          }
+        }
+      }
+    },
+    "/task/{id}": {
+      "get": {
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "tags": ["Task"],
+        "summary": "Get task by ID",
+        "description": "Get task by ID task",
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "ID course"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error"
+          },
+          "400": {
+            "description": "course not found"
+          },
+          "401": {
+            "description": "access denied"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "ApiKeyAuth": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization"
+      }
+    },
+    "schemas": {
+      "RequestLogin": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          }
+        },
+        "required": ["email", "password"]
+      },
+      "RequestRegister": {
+        "type": "object",
+        "properties": {
+          "user_name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "confirm_password": {
+            "type": "string"
+          }
+        },
+        "required": ["user_name", "email", "password", "confirm_password"]
+      },
+      "RequestCreateCourse": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "department": {
+            "enum": ["frontend", "backend", "frontend & backend"]
+          },
+          "url_image": {
+            "type": "string"
+          }
+        },
+        "required": ["title", "department", "url_image"]
+      },
+      "RequestModules": {
+        "type": "object",
+        "properties": {
+          "title_module": {
+            "type": "string"
+          },
+          "description_module": {
+            "type": "string"
+          }
+        },
+        "required": ["title_module", "description_module"]
+      },
+      "AllModules": {
+        "type": "object",
+        "properties": {
+          "course_id": {
+            "type": "string"
+          },
+          "modules": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "title_module": {
+                "type": "string"
+              },
+              "description_module": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "DetailModule": {
+        "id": {
+          "type": "string"
+        },
+        "title_module": {
+          "type": "string"
+        },
+        "description_module": {
+          "type": "string"
+        }
+      }
+    },
+    "parameters": {
+      "Id": {
+        "name": "Id",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

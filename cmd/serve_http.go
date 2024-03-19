@@ -169,5 +169,7 @@ func registerHandler(h handler) *mux.Router {
 	protectedV1Route.HandleFunc("/logout", h.userHandler.Logout).Methods(http.MethodPost)
 
 	protectedV1Route.HandleFunc("/update", h.userHandler.UpdateProfileUser).Methods(http.MethodPut)
+	protectedV1Route.HandleFunc("/", h.userHandler.GetUserById).Methods(http.MethodGet)
+
 	return router
 }

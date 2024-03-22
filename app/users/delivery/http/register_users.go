@@ -2,11 +2,12 @@ package http
 
 import (
 	"encoding/json"
+	"io"
+	"net/http"
+
 	"github.com/hammer-code/lms-be/domain"
 	"github.com/hammer-code/lms-be/utils"
 	"github.com/sirupsen/logrus"
-	"io"
-	"net/http"
 )
 
 func (h Handler) Register(w http.ResponseWriter, r *http.Request) {
@@ -41,12 +42,11 @@ func (h Handler) Register(w http.ResponseWriter, r *http.Request) {
 	resultUser, err := h.usecase.Register(r.Context(), userInput)
 	if err != nil {
 		logrus.Error("userUsecase: failed to register user")
-		utils.Response(domain.HttpResponse{
-			Code:    500,
-			Message: err.Error(),
-		}, w)
+		resp := utils.CostumErr(err.Error())
+		utils.Response(resp, w)
 		return
 	}
+	
 	utils.Response(domain.HttpResponse{
 		Code:    200,
 		Message: "success",

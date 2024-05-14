@@ -14,6 +14,7 @@ type (
 		FindById(ctx context.Context, id int8) (user domain.User, err error)
 		FindByEmail(ctx context.Context, email string) (user domain.User, err error)
 		UpdateProfileUser(ctx context.Context, userReq domain.UserUpdateProfile, id int) error
+		DeleteUser(ctx context.Context, id int8) error
 		LogoutUser(ctx context.Context, token string, expiredAt time.Time) error
 		ExpiredToken(ctx context.Context, token string) error
 	}
@@ -23,6 +24,7 @@ type (
 		Register(ctx context.Context, userReq domain.User) (user domain.User, err error)
 		Login(ctx context.Context, userReq domain.Login) (user domain.User, token string, err error)
 		UpdateProfileUser(ctx context.Context, userReq domain.UserUpdateProfile, id int) error
+		DeleteUser(ctx context.Context, id int8) error
 		Logout(ctx context.Context, token string) error
 	}
 )

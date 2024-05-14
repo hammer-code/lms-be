@@ -46,7 +46,6 @@ type (
 	}
 )
 
-
 func (User) TableName() string {
 	return "users"
 }
@@ -61,7 +60,7 @@ func RegistToUser(r Register) User {
 
 func UserUpdateProfileToUser(u UserUpdateProfile) User {
 	return User{
-Username: u.Username,
+		Username:    u.Username,
 		Fullname:    u.Fullname,
 		DateOfBirth: u.DateOfBirth,
 		Gender:      u.Gender,

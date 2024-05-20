@@ -27,6 +27,7 @@ jobs:
     deploy:
         runs-on: ubuntu-latest
         # needs: build
+        environment: development
         steps:
             - name: Checkout Code
               uses: actions/checkout@v2

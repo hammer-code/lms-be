@@ -38,7 +38,6 @@ jobs:
                   VPS_USER: ${{ secrets.VPS_USER }}
                   VPS_KEY: ${{ secrets.VPS_KEY }}
               run: |
-                  echo "user ${{ secrets.VPS_USER }}"
                   echo "$VPS_KEY" > vps_key.pem
 
                   chmod 600 vps_key.pem
@@ -46,6 +45,7 @@ jobs:
                   ssh -o StrictHostKeyChecking=no -i vps_key.pem $VPS_USER@$VPS_IP "
                   cd /home/hmcroot/app/development/lms-be &&
                   git pull origin development &&
+                  export PATH=\$PATH:/usr/local/go/bin &&
                   go mod tidy &&
                   go build -o main . &&
                   sudo systemctl restart lms-be-development"

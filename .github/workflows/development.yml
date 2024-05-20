@@ -32,7 +32,7 @@ jobs:
             - name: Checkout Code
               uses: actions/checkout@v2
 
-            - name: Deploy to Production Environment
+            - name: Deploy to Development Environment
               env:
                   VPS_IP: ${{ secrets.VPS_IP }}
                   VPS_USER: ${{ secrets.VPS_USER }}
@@ -48,4 +48,4 @@ jobs:
                   export PATH=\$PATH:/usr/local/go/bin &&
                   go mod tidy &&
                   go build -o main . &&
-                  sudo systemctl restart lms-be-development"
+                  sudo systemctl restart lms-be-development.service"

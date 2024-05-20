@@ -27,10 +27,6 @@ import (
 	"gorm.io/driver/postgres"
 )
 
-func port() string {
-	return ":8000"
-}
-
 var serveHttpCmd = &cobra.Command{
 	Use:   "http",
 	Short: "launches an HTTP server",
@@ -77,7 +73,7 @@ var serveHttpCmd = &cobra.Command{
 		)(router)
 
 		srv := &http.Server{
-			Addr:    port(),
+			Addr:    cfg.APP_PORT,
 			Handler: muxCorsWithRouter,
 		}
 
@@ -93,7 +89,7 @@ var serveHttpCmd = &cobra.Command{
 			logrus.Info("svr.Shutdown: shutdown success")
 		}()
 
-		logrus.Info(fmt.Sprintf("server started, running on port %s", port()))
+		logrus.Info(fmt.Sprintf("server started, running on port %s", cfg.APP_PORT))
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			logrus.Fatal("starting server failed", err)
 		}
@@ -168,7 +164,7 @@ func registerHandler(h handler) *mux.Router {
 	protectedV1Route.HandleFunc("/users", h.userHandler.GetUsers).Methods(http.MethodGet)
 	protectedV1Route.HandleFunc("/user", h.userHandler.GetUserProfile).Methods(http.MethodGet)
 	protectedV1Route.HandleFunc("/logout", h.userHandler.Logout).Methods(http.MethodPost)
-	
+
 	protectedV1Route.HandleFunc("/", h.userHandler.GetUserById).Methods(http.MethodGet)
 	protectedV1Route.HandleFunc("/update", h.userHandler.UpdateProfileUser).Methods(http.MethodPut)
 	protectedV1Route.HandleFunc("/delete", h.userHandler.DeleteUser).Methods(http.MethodDelete)

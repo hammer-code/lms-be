@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 
+	"github.com/hammer-code/lms-be/constants"
 	"github.com/hammer-code/lms-be/domain"
 	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/bcrypt"
@@ -18,7 +19,7 @@ func (us *usecase) Register(ctx context.Context, userReq domain.User) (domain.Us
 		}
 
 		userReq.Password = string(hashPassword)
-		userReq.Role = "user"
+		userReq.Role = constants.RoleUser
 		user, err = us.userRepo.CreateUser(ctx, userReq)
 		if err != nil {
 			logrus.Error("us.Register: failed to register users. ", err)

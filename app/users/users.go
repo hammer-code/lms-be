@@ -17,6 +17,7 @@ type (
 		DeleteUser(ctx context.Context, id int8) error
 		LogoutUser(ctx context.Context, token string, expiredAt time.Time) error
 		ExpiredToken(ctx context.Context, token string) error
+		GetUsersGenericConditions(ctx context.Context, filter domain.GetUserBy) (users []domain.User, err error)
 	}
 	UserUsecase interface {
 		GetUsers(ctx context.Context) (users []domain.User, err error)

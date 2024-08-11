@@ -39,8 +39,6 @@ func (us *usecase) Subscribe(ctx context.Context, email string) error {
 		return err
 	}
 
-	fmt.Println(string(htmlTmpl))
-
 	subject := "Thank You for Your Interest in PDD24!"
 	mime := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
 	message := []byte(fmt.Sprintf("To: %s\r\n"+

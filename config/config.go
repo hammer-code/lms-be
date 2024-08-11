@@ -10,11 +10,17 @@ import (
 
 type (
 	Config struct {
-		APP_ENV              string
-		APP_NAME             string
-		APP_PORT             string
-		DB_POSTGRES_DSN      string
-		JWT_SECRET_KEY       string
+		APP_ENV         string
+		APP_NAME        string
+		APP_PORT        string
+		DB_POSTGRES_DSN string
+		JWT_SECRET_KEY  string
+
+		SMTP_HOST     string
+		SMTP_PORT     string
+		SMTP_EMAIL    string
+		SMTP_PASSWORD string
+
 		CORS_ALLOWED_ORIGINS []string
 		CORS_ALLOWED_METHODS []string
 		CORS_ALLOWED_HEADERS []string
@@ -62,6 +68,10 @@ func GetConfig() Config {
 		APP_PORT:             viper.GetString("APP_PORT"),
 		DB_POSTGRES_DSN:      viper.GetString("DB_POSTGRES_DSN"),
 		JWT_SECRET_KEY:       viper.GetString("JWT_SECRET_KEY"),
+		SMTP_HOST:            viper.GetString("SMTP_HOST"),
+		SMTP_PORT:            viper.GetString("SMTP_PORT"),
+		SMTP_EMAIL:           viper.GetString("SMTP_EMAIL"),
+		SMTP_PASSWORD:        viper.GetString("SMTP_PASSWORD"),
 		CORS_ALLOWED_ORIGINS: origins,
 		CORS_ALLOWED_METHODS: methods,
 		CORS_ALLOWED_HEADERS: headers,

@@ -12,9 +12,15 @@ import (
 
 	muxHandlers "github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
+
 	users_handler "github.com/hammer-code/lms-be/app/users/delivery/http"
 	users_repo "github.com/hammer-code/lms-be/app/users/repository"
 	users_usecase "github.com/hammer-code/lms-be/app/users/usecase"
+
+	newsletter_handler "github.com/hammer-code/lms-be/app/newsletters/delivery/http"
+	newsletter_repo "github.com/hammer-code/lms-be/app/newsletters/repository"
+	newsletter_usecase "github.com/hammer-code/lms-be/app/newsletters/usecase"
+
 	"github.com/hammer-code/lms-be/config"
 	"github.com/hammer-code/lms-be/domain"
 	pkgDB "github.com/hammer-code/lms-be/pkg/db"
@@ -47,8 +53,10 @@ var serveHttpCmd = &cobra.Command{
 
 		// repository
 		userRepo := users_repo.NewRepository(dbTx)
+		newsletterRepo := newsletter_repo.NewRepository(dbTx)
 		// usecase
 		userUsecase := users_usecase.NewUsecase(userRepo, dbTx, jwt.NewJwt(cfg.JWT_SECRET_KEY))
+		newsletterUC := newsletter_usecase.NewUsecase(cfg, newsletterRepo, dbTx, jwt.NewJwt(cfg.JWT_SECRET_KEY))
 
 		// Middlewares
 		middleware := middlewares.Middleware{
@@ -58,10 +66,12 @@ var serveHttpCmd = &cobra.Command{
 
 		// handler
 		userHandler := users_handler.NewHandler(userUsecase, &middleware)
+		newsletterHandler := newsletter_handler.NewHandler(newsletterUC, &middleware)
 
 		// route
 		router := registerHandler(handler{
-			userHandler: userHandler,
+			userHandler:       userHandler,
+			newsletterHandler: newsletterHandler,
 		})
 
 		// build cors
@@ -142,7 +152,8 @@ func health(w http.ResponseWriter, _ *http.Request) {
 }
 
 type handler struct {
-	userHandler users_handler.Handler
+	userHandler       users_handler.Handler
+	newsletterHandler newsletter_handler.Handler
 }
 
 func registerHandler(h handler) *mux.Router {
@@ -155,6 +166,8 @@ func registerHandler(h handler) *mux.Router {
 	doc.Handler(httpSwagger.WrapHandler)
 
 	v1 := router.PathPrefix("/api/v1").Subrouter()
+	v1.HandleFunc("/newsletters/subscribe", h.newsletterHandler.Subscribe).Methods(http.MethodPost)
+
 	protectedV1Route := v1.NewRoute().Subrouter()
 	protectedV1Route.Use(h.userHandler.Middleware.AuthMiddleware)
 

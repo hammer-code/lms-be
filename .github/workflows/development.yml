@@ -44,7 +44,7 @@ jobs:
 
                   ssh -o StrictHostKeyChecking=no -i vps_key.pem $VPS_USER@$VPS_IP "
                   cd /home/hmcroot/app/development/lms-be &&
-                  git pull origin development &&
+                  git restore . && git pull origin development &&
                   export PATH=\$PATH:/usr/local/go/bin &&
                   go mod tidy &&
                   go build -o main . &&

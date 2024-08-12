@@ -1,18 +1,25 @@
 package http
 
 import (
-	"github.com/hammer-code/lms-be/app/middlewares"
-	"github.com/hammer-code/lms-be/app/newsletters"
+	"github.com/hammer-code/lms-be/domain"
 )
 
-type Handler struct {
-	usecase    newsletters.NewslettersUsecase
-	Middleware middlewares.Middleware
+type handler struct {
+	usecase    domain.NewslettersUsecase
+	middleware domain.Middleware
 }
 
-func NewHandler(ucNewsletter newsletters.NewslettersUsecase, middleware *middlewares.Middleware) Handler {
-	return Handler{
-		usecase:    ucNewsletter,
-		Middleware: *middleware,
+var (
+	handlr *handler
+)
+
+func NewHandler(ucNewsletter domain.NewslettersUsecase, middleware domain.Middleware) domain.NewslettterHandler {
+
+	if handlr == nil {
+		handlr = &handler{
+			usecase:    ucNewsletter,
+			middleware: middleware,
+		}
 	}
+	return handlr
 }

@@ -1,8 +1,43 @@
 package domain
 
-import "time"
+import (
+	"context"
+	"net/http"
+	"time"
+)
 
 type (
+	UserRepository interface {
+		GetUsers(ctx context.Context) (users []User, err error)
+		CreateUser(ctx context.Context, userReq User) (user User, err error)
+		FindById(ctx context.Context, id int8) (user User, err error)
+		FindByEmail(ctx context.Context, email string) (user User, err error)
+		UpdateProfileUser(ctx context.Context, userReq UserUpdateProfile, id int) error
+		DeleteUser(ctx context.Context, id int8) error
+		LogoutUser(ctx context.Context, token string, expiredAt time.Time) error
+		ExpiredToken(ctx context.Context, token string) error
+		GetUsersGenericConditions(ctx context.Context, filter GetUserBy) (users []User, err error)
+	}
+	UserUsecase interface {
+		GetUsers(ctx context.Context) (users []User, err error)
+		GetUserById(ctx context.Context, id int8) (users User, err error)
+		Register(ctx context.Context, userReq User) (user User, err error)
+		Login(ctx context.Context, userReq Login) (user User, token string, err error)
+		UpdateProfileUser(ctx context.Context, userReq UserUpdateProfile, id int) error
+		DeleteUser(ctx context.Context, id int8) error
+		Logout(ctx context.Context, token string) error
+	}
+
+	UserHandler interface {
+		Login(w http.ResponseWriter, r *http.Request)
+		UpdateProfileUser(w http.ResponseWriter, r *http.Request)
+		DeleteUser(w http.ResponseWriter, r *http.Request)
+		GetUsers(w http.ResponseWriter, r *http.Request)
+		Logout(w http.ResponseWriter, r *http.Request)
+		Register(w http.ResponseWriter, r *http.Request)
+		GetUserById(w http.ResponseWriter, r *http.Request)
+		GetUserProfile(w http.ResponseWriter, r *http.Request)
+	}
 	User struct {
 		ID          int       `gorm:"primaryKey" json:"id"`
 		Username    string    `json:"username" gorm:"type:varchar(255);not null;unique"`

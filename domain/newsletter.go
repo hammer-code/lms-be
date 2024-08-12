@@ -1,7 +1,23 @@
 package domain
 
-import "time"
+import (
+	"context"
+	"net/http"
+	"time"
+)
 
+type NewsletterRepository interface {
+	Subscribe(context.Context, Newsletter) error
+	GetByEmail(context.Context, string) (*Newsletter, error)
+}
+
+type NewslettersUsecase interface {
+	Subscribe(context.Context, string) error
+}
+
+type NewslettterHandler interface {
+	Subscribe(w http.ResponseWriter, r *http.Request)
+}
 type Newsletter struct {
 	ID        int       `gorm:"primaryKey" json:"id"`
 	Email     string    `json:"email" gorm:"type:varchar(255);not null;unique"`

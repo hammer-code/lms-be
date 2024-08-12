@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"github.com/hammer-code/lms-be/app/users"
+	"github.com/hammer-code/lms-be/domain"
 	pkgDB "github.com/hammer-code/lms-be/pkg/db"
 )
 
@@ -11,9 +11,16 @@ type (
 	}
 )
 
-// injek magang
-func NewRepository(db pkgDB.DatabaseTransaction) users.UserRepository {
-	return &repository{
-		db,
+var (
+	repo *repository
+)
+
+func NewRepository(db pkgDB.DatabaseTransaction) domain.UserRepository {
+	if repo == nil {
+		repo = &repository{
+			db,
+		}
 	}
+
+	return repo
 }

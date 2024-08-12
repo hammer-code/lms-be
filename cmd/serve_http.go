@@ -8,29 +8,17 @@ import (
 	"os/signal"
 	"syscall"
 
-	"github.com/hammer-code/lms-be/app/middlewares"
-
 	muxHandlers "github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 
-	users_handler "github.com/hammer-code/lms-be/app/users/delivery/http"
-	users_repo "github.com/hammer-code/lms-be/app/users/repository"
-	users_usecase "github.com/hammer-code/lms-be/app/users/usecase"
-
-	newsletter_handler "github.com/hammer-code/lms-be/app/newsletters/delivery/http"
-	newsletter_repo "github.com/hammer-code/lms-be/app/newsletters/repository"
-	newsletter_usecase "github.com/hammer-code/lms-be/app/newsletters/usecase"
-
+	"github.com/hammer-code/lms-be/app"
 	"github.com/hammer-code/lms-be/config"
 	"github.com/hammer-code/lms-be/domain"
-	pkgDB "github.com/hammer-code/lms-be/pkg/db"
-	"github.com/hammer-code/lms-be/pkg/jwt"
 	"github.com/hammer-code/lms-be/utils"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 	httpSwagger "github.com/swaggo/http-swagger"
 	"github.com/swaggo/swag"
-	"gorm.io/driver/postgres"
 )
 
 var serveHttpCmd = &cobra.Command{
@@ -43,36 +31,10 @@ var serveHttpCmd = &cobra.Command{
 
 		cfg := config.GetConfig()
 
-		db := config.GetDatabase(postgres.Dialector{
-			Config: &postgres.Config{
-				DSN: cfg.DB_POSTGRES_DSN,
-			}})
-
-		dbTx := pkgDB.NewDBTransaction(db)
-		jwtInstance := jwt.NewJwt(cfg.JWT_SECRET_KEY)
-
-		// repository
-		userRepo := users_repo.NewRepository(dbTx)
-		newsletterRepo := newsletter_repo.NewRepository(dbTx)
-		// usecase
-		userUsecase := users_usecase.NewUsecase(userRepo, dbTx, jwt.NewJwt(cfg.JWT_SECRET_KEY))
-		newsletterUC := newsletter_usecase.NewUsecase(cfg, newsletterRepo, dbTx, jwt.NewJwt(cfg.JWT_SECRET_KEY))
-
-		// Middlewares
-		middleware := middlewares.Middleware{
-			Jwt:      jwtInstance,
-			UserRepo: userRepo,
-		}
-
-		// handler
-		userHandler := users_handler.NewHandler(userUsecase, &middleware)
-		newsletterHandler := newsletter_handler.NewHandler(newsletterUC, &middleware)
+		app := app.InitApp(cfg)
 
 		// route
-		router := registerHandler(handler{
-			userHandler:       userHandler,
-			newsletterHandler: newsletterHandler,
-		})
+		router := registerHandler(app)
 
 		// build cors
 		muxCorsWithRouter := muxHandlers.CORS(
@@ -151,12 +113,7 @@ func health(w http.ResponseWriter, _ *http.Request) {
 	}, w)
 }
 
-type handler struct {
-	userHandler       users_handler.Handler
-	newsletterHandler newsletter_handler.Handler
-}
-
-func registerHandler(h handler) *mux.Router {
+func registerHandler(app app.App) *mux.Router {
 
 	router := mux.NewRouter()
 
@@ -166,21 +123,21 @@ func registerHandler(h handler) *mux.Router {
 	doc.Handler(httpSwagger.WrapHandler)
 
 	v1 := router.PathPrefix("/api/v1").Subrouter()
-	v1.HandleFunc("/newsletters/subscribe", h.newsletterHandler.Subscribe).Methods(http.MethodPost)
+	v1.HandleFunc("/newsletters/subscribe", app.NewLetterHandler.Subscribe).Methods(http.MethodPost)
 
 	protectedV1Route := v1.NewRoute().Subrouter()
-	protectedV1Route.Use(h.userHandler.Middleware.AuthMiddleware)
+	protectedV1Route.Use(app.Middleware.AuthMiddleware)
 
-	v1.HandleFunc("/register", h.userHandler.Register).Methods(http.MethodPost)
-	v1.HandleFunc("/login", h.userHandler.Login).Methods(http.MethodPost)
+	v1.HandleFunc("/register", app.UserHandler.Register).Methods(http.MethodPost)
+	v1.HandleFunc("/login", app.UserHandler.Login).Methods(http.MethodPost)
 
-	protectedV1Route.HandleFunc("/users", h.userHandler.GetUsers).Methods(http.MethodGet)
-	protectedV1Route.HandleFunc("/user", h.userHandler.GetUserProfile).Methods(http.MethodGet)
-	protectedV1Route.HandleFunc("/logout", h.userHandler.Logout).Methods(http.MethodPost)
+	protectedV1Route.HandleFunc("/users", app.UserHandler.GetUsers).Methods(http.MethodGet)
+	protectedV1Route.HandleFunc("/user", app.UserHandler.GetUserProfile).Methods(http.MethodGet)
+	protectedV1Route.HandleFunc("/logout", app.UserHandler.Logout).Methods(http.MethodPost)
 
-	protectedV1Route.HandleFunc("/", h.userHandler.GetUserById).Methods(http.MethodGet)
-	protectedV1Route.HandleFunc("/update", h.userHandler.UpdateProfileUser).Methods(http.MethodPut)
-	protectedV1Route.HandleFunc("/delete", h.userHandler.DeleteUser).Methods(http.MethodDelete)
+	protectedV1Route.HandleFunc("/", app.UserHandler.GetUserById).Methods(http.MethodGet)
+	protectedV1Route.HandleFunc("/update", app.UserHandler.UpdateProfileUser).Methods(http.MethodPut)
+	protectedV1Route.HandleFunc("/delete", app.UserHandler.DeleteUser).Methods(http.MethodDelete)
 
 	return router
 }

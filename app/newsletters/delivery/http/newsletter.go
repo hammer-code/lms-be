@@ -11,7 +11,7 @@ import (
 
 // set allowed origin
 // only request from allowed origin, can bed passed to this endpoint
-func (h Handler) Subscribe(w http.ResponseWriter, r *http.Request) {
+func (h handler) Subscribe(w http.ResponseWriter, r *http.Request) {
 	body, err := io.ReadAll(r.Body)
 	if err != nil {
 		utils.Response(domain.HttpResponse{

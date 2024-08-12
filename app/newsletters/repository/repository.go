@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"github.com/hammer-code/lms-be/app/newsletters"
+	"github.com/hammer-code/lms-be/domain"
 	pkgDB "github.com/hammer-code/lms-be/pkg/db"
 )
 
@@ -12,7 +12,7 @@ type (
 )
 
 // injek magang
-func NewRepository(db pkgDB.DatabaseTransaction) newsletters.NewsletterRepository {
+func NewRepository(db pkgDB.DatabaseTransaction) domain.NewsletterRepository {
 	return &repository{
 		db,
 	}

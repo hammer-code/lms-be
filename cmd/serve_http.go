@@ -123,6 +123,8 @@ func registerHandler(app app.App) *mux.Router {
 	doc.Handler(httpSwagger.WrapHandler)
 
 	v1 := router.PathPrefix("/api/v1").Subrouter()
+	v1.HandleFunc("/newsletters/subscribe", app.NewLetterHandler.Subscribe).Methods(http.MethodPost)
+
 	protectedV1Route := v1.NewRoute().Subrouter()
 	protectedV1Route.Use(app.Middleware.AuthMiddleware)
 

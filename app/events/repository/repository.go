@@ -18,15 +18,15 @@ var (
 	repo *repository
 )
 
-func NewRepository(db pkgDB.DatabaseTransaction) domain.EventRepository {
-	if repo == nil {
-		repo = &repository{
-			db,
-		}
-	}
+// func NewRepository(db pkgDB.DatabaseTransaction) domain.EventRepository {
+// 	if repo == nil {
+// 		repo = &repository{
+// 			db,
+// 		}
+// 	}
 
-	return repo
-}
+// 	return repo
+// }
 
 func (r repository) CreateEvent(ctx context.Context, event domain.Event) (int, error) {
 	err := repo.db.DB(ctx).Create(&event).Error

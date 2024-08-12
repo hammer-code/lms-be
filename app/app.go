@@ -2,6 +2,7 @@ package app
 
 import (
 	"github.com/hammer-code/lms-be/app/middlewares"
+	newsletters "github.com/hammer-code/lms-be/app/newsletters"
 	users "github.com/hammer-code/lms-be/app/users"
 	"github.com/hammer-code/lms-be/config"
 	"github.com/hammer-code/lms-be/domain"
@@ -11,8 +12,9 @@ import (
 )
 
 type App struct {
-	UserHandler domain.UserHandler
-	Middleware  domain.Middleware
+	Middleware       domain.Middleware
+	UserHandler      domain.UserHandler
+	NewLetterHandler domain.NewslettterHandler
 }
 
 func InitApp(
@@ -35,8 +37,17 @@ func InitApp(
 
 	userHandler := users.InitHandler(dbTx, jwtInstance)
 
+	// repository
+	newsletterRepo := newsletters.InitRepository(dbTx)
+	// usecase
+	newsletterUC := newsletters.InitUsecase(cfg, newsletterRepo, dbTx, jwt.NewJwt(cfg.JWT_SECRET_KEY))
+
+	// handler
+	newsletterHandler := newsletters.InitHandler(newsletterUC, middleware)
+
 	return App{
-		UserHandler: userHandler,
-		Middleware:  middleware,
+		UserHandler:      userHandler,
+		NewLetterHandler: newsletterHandler,
+		Middleware:       middleware,
 	}
 }

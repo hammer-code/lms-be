@@ -30,15 +30,15 @@ func (m *Middleware) AuthMiddleware(next http.Handler) http.Handler {
 			return
 		}
 
-		tokenLogoutErr := m.UserRepo.ExpiredToken(request.Context(), *token)
-		if tokenLogoutErr == nil {
-			utils.Response(domain.HttpResponse{
-				Code:    401,
-				Message: "Token expired",
-				Data:    nil,
-			}, writer)
-			return
-		}
+		// tokenLogoutErr := m.UserRepo.ExpiredToken(request.Context(), *token)
+		// if tokenLogoutErr == nil {
+		// 	utils.Response(domain.HttpResponse{
+		// 		Code:    401,
+		// 		Message: "Token expired",
+		// 		Data:    nil,
+		// 	}, writer)
+		// 	return
+		// }
 
 		user, err := m.UserRepo.FindByEmail(request.Context(), verifyToken.Email)
 		if err != nil {

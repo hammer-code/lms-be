@@ -125,11 +125,18 @@ func registerHandler(app app.App) *mux.Router {
 	v1 := router.PathPrefix("/api/v1").Subrouter()
 	v1.HandleFunc("/newsletters/subscribe", app.NewLetterHandler.Subscribe).Methods(http.MethodPost)
 
+	auth := v1.PathPrefix("/auth").Subrouter()
+	auth.HandleFunc("/register", app.UserHandler.Register).Methods(http.MethodPost)
+	auth.HandleFunc("/login", app.UserHandler.Login).Methods(http.MethodPost)
+
+	public := v1.PathPrefix("/public").Subrouter()
+	public.HandleFunc("/events", app.EventHandler.GetEvents).Methods(http.MethodGet)
+	public.HandleFunc("/images", app.ImageHandler.UploadImage).Methods(http.MethodPost)
+	public.HandleFunc("/events/registration", app.EventHandler.RegisterEvent).Methods(http.MethodPost)
+	public.HandleFunc("/events/pay", app.EventHandler.PayEvent).Methods(http.MethodPost)
+
 	protectedV1Route := v1.NewRoute().Subrouter()
 	protectedV1Route.Use(app.Middleware.AuthMiddleware)
-
-	v1.HandleFunc("/register", app.UserHandler.Register).Methods(http.MethodPost)
-	v1.HandleFunc("/login", app.UserHandler.Login).Methods(http.MethodPost)
 
 	protectedV1Route.HandleFunc("/users", app.UserHandler.GetUsers).Methods(http.MethodGet)
 	protectedV1Route.HandleFunc("/user", app.UserHandler.GetUserProfile).Methods(http.MethodGet)
@@ -138,6 +145,10 @@ func registerHandler(app app.App) *mux.Router {
 	protectedV1Route.HandleFunc("/", app.UserHandler.GetUserById).Methods(http.MethodGet)
 	protectedV1Route.HandleFunc("/update", app.UserHandler.UpdateProfileUser).Methods(http.MethodPut)
 	protectedV1Route.HandleFunc("/delete", app.UserHandler.DeleteUser).Methods(http.MethodDelete)
+
+	protectedV1Route.HandleFunc("/events", app.EventHandler.CreateEvent).Methods(http.MethodPost)
+	protectedV1Route.HandleFunc("/events", app.EventHandler.GetEvents).Methods(http.MethodGet)
+	protectedV1Route.HandleFunc("/images", app.ImageHandler.UploadImage).Methods(http.MethodPost)
 
 	return router
 }

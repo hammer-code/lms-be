@@ -1,11 +1,8 @@
 package repository
 
 import (
-	"context"
-
 	"github.com/hammer-code/lms-be/domain"
 	pkgDB "github.com/hammer-code/lms-be/pkg/db"
-	"github.com/sirupsen/logrus"
 )
 
 type (
@@ -18,23 +15,14 @@ var (
 	repo *repository
 )
 
-// func NewRepository(db pkgDB.DatabaseTransaction) domain.EventRepository {
-// 	if repo == nil {
-// 		repo = &repository{
-// 			db,
-// 		}
-// 	}
-
-// 	return repo
-// }
-
-func (r repository) CreateEvent(ctx context.Context, event domain.Event) (int, error) {
-	err := repo.db.DB(ctx).Create(&event).Error
-	if err != nil {
-		logrus.Error("repo.CreateUser : failed to create user")
-		return 0, err
+func NewRepository(db pkgDB.DatabaseTransaction) domain.EventRepository {
+	if repo == nil {
+		repo = &repository{
+			db,
+		}
 	}
-	return 1, nil
+
+	return repo
 }
 
 // 	UpdateEvent(ctx context.Context, payload UpdateEvenPayload) error

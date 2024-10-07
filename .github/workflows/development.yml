@@ -45,7 +45,7 @@ jobs:
 
                   chmod 600 vps_key.pem
 
-                  ssh -o StrictHostKeyChecking=no -i vps_key.pem $VPS_USER@$VPS_IP "
+                  scp -o StrictHostKeyChecking=no -i vps_key.pem main.tar.gz $VPS_USER@$VPS_IP:/home/hmcroot/app/development/lms-be/
                   cd /home/hmcroot/app/development/lms-be &&
                   rm -f main &&
                   tar -xzvf main.tar.gz &&

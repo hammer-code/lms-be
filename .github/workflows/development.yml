@@ -27,6 +27,12 @@ jobs:
             - name: Archive Build Output
               run: tar -czvf main.tar.gz main
 
+            - name: Upload Artifact
+              uses: actions/upload-artifact@v3
+              with:
+                name: build-artifact
+                path: main.tar.gz
+
     deploy:
         runs-on: ubuntu-latest
         needs: build
@@ -34,6 +40,11 @@ jobs:
         steps:
             - name: Checkout Code
               uses: actions/checkout@v2
+
+            - name: Download Build Artifact
+              uses: actions/download-artifact@v3
+              with:
+                name: build-artifact
 
             - name: Deploy to Development Environment
               env:
@@ -46,6 +57,7 @@ jobs:
                   chmod 600 vps_key.pem
 
                   scp -o StrictHostKeyChecking=no -i vps_key.pem main.tar.gz $VPS_USER@$VPS_IP:/home/hmcroot/app/development/lms-be/
+                  ssh -o StrictHostKeyChecking=no -i vps_key.pem $VPS_USER@$VPS_IP "
                   cd /home/hmcroot/app/development/lms-be &&
                   rm -f main &&
                   tar -xzvf main.tar.gz &&

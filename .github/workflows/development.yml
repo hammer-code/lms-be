@@ -6,23 +6,26 @@ on:
             - development
 
 jobs:
-    # build:
-    #     runs-on: ubuntu-latest
+    build:
+        runs-on: ubuntu-latest
 
-    #     steps:
-    #         - name: Checkout Code
-    #           uses: actions/checkout@v2
+        steps:
+            - name: Checkout Code
+              uses: actions/checkout@v2
 
-    #         - name: Set up Go
-    #           uses: actions/setup-go@v2
-    #           with:
-    #               go-version: '1.20'
+            - name: Set up Go
+              uses: actions/setup-go@v2
+              with:
+                  go-version: '1.20'
 
-    #         - name: Build
-    #           run: go build -v ./...
+            - name: Test
+              run: go test -v ./...
 
-    #         - name: Test
-    #           run: go test -v ./...
+            - name: Build
+              run: go build -o main .
+            
+            - name: Archive Build Output
+              run: tar -czvf main.tar.gz main
 
     deploy:
         runs-on: ubuntu-latest
@@ -44,8 +47,6 @@ jobs:
 
                   ssh -o StrictHostKeyChecking=no -i vps_key.pem $VPS_USER@$VPS_IP "
                   cd /home/hmcroot/app/development/lms-be &&
-                  git restore . && git pull origin development &&
-                  export PATH=\$PATH:/usr/local/go/bin &&
-                  go mod tidy &&
-                  go build -o main . &&
+                  rm -f main &&
+                  tar -xzvf main.tar.gz &&
                   sudo systemctl restart lms-be-development.service"

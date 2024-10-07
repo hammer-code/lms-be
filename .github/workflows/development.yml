@@ -60,5 +60,5 @@ jobs:
                   ssh -o StrictHostKeyChecking=no -i vps_key.pem $VPS_USER@$VPS_IP "
                   cd /home/hmcroot/app/development/lms-be &&
                   rm -f main &&
-                  tar -xzvf main.tar.gz &&
+                  tar -xzvf main.tar.gz && rm -f main.tar.gz
                   sudo systemctl restart lms-be-development.service"

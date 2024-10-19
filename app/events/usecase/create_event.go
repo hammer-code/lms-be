@@ -25,7 +25,7 @@ func (uc usecase) CreateEvent(ctx context.Context, payload domain.CreateEvenPayl
 			Title:            payload.Title,
 			Description:      payload.Description,
 			Author:           payload.Author,
-			ImageEvent:       dataImage.FilePath,
+			ImageEvent:       dataImage.FileName,
 			DateEvent:        payload.DateEvent,
 			Type:             payload.Type,
 			Location:         payload.Location,

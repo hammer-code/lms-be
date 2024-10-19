@@ -14,15 +14,7 @@ func (h Handler) GetStorage(w http.ResponseWriter, r *http.Request) {
 	// kind := vars["kind"]
 	path := vars["path"]
 
-	filePath, err := h.usecase.GetStorage(r.Context(), path)
-	if err != nil {
-		logrus.Error("failed to Create pay event : ", err)
-		utils.Response(domain.HttpResponse{
-			Code:    500,
-			Message: err.Error(),
-		}, w)
-		return
-	}
+	filePath, _ := h.usecase.GetStorage(r.Context(), path)
 
 	if filePath == "" {
 		logrus.Error("file not found")

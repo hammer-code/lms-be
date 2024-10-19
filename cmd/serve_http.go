@@ -149,6 +149,7 @@ func registerHandler(app app.App) *mux.Router {
 	protectedV1Route.HandleFunc("/delete", app.UserHandler.DeleteUser).Methods(http.MethodDelete)
 
 	protectedV1Route.HandleFunc("/events", app.EventHandler.CreateEvent).Methods(http.MethodPost)
+	protectedV1Route.HandleFunc("/events", app.EventHandler.GetEvents).Methods(http.MethodGet)
 	protectedV1Route.HandleFunc("/events/{id}", app.EventHandler.GetEventByID).Methods(http.MethodGet)
 	protectedV1Route.HandleFunc("/images", app.ImageHandler.UploadImage).Methods(http.MethodPost)
 

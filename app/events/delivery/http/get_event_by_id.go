@@ -16,7 +16,7 @@ func (h Handler) GetEventByID(w http.ResponseWriter, r *http.Request) {
 
 	value, err := strconv.ParseUint(idString, 10, 32)
 	if err != nil {
-		logrus.Error("failed to convert string to uint: %v", err)
+		logrus.Error("failed to convert string to uint: ", err)
 		utils.Response(domain.HttpResponse{
 			Code:    500,
 			Message: err.Error(),

@@ -24,7 +24,7 @@ func (uc usecase) CreateRegisterEvent(ctx context.Context, payload domain.Regist
 
 	tNow := time.Now()
 
-	if event.BookingStart.Valid {
+	if !event.BookingStart.Valid {
 		return domain.RegisterEventResponse{}, errors.New("event is not start to booking")
 	}
 

@@ -21,6 +21,7 @@ type EventRepository interface {
 	CreateRegisterEvent(ctx context.Context, event RegistrationEvent) (uint, error)
 	GetEvent(ctx context.Context, eventID uint) (data Event, err error)
 	GetRegistrationEvent(ctx context.Context, orderNo string) (data RegistrationEvent, err error)
+	ListRegistration(ctx context.Context, filter EventFilter) (tData int, data []RegistrationEvent, err error)
 }
 
 type EventUsecase interface {
@@ -30,6 +31,7 @@ type EventUsecase interface {
 	CreatePayEvent(ctx context.Context, payload EventPayPayload) error
 	GetEventByID(ctx context.Context, id uint) (resp Event, err error)
 	RegistrationStatus(ctx context.Context, orderNo string) (resp RegisterStatusResponse, err error)
+	ListRegistration(ctx context.Context, filter EventFilter) (resp []RegistrationEvent, pagination Pagination, err error)
 }
 
 type EventHandler interface {
@@ -39,6 +41,7 @@ type EventHandler interface {
 	PayEvent(w http.ResponseWriter, r *http.Request)
 	GetEventByID(w http.ResponseWriter, r *http.Request)
 	RegistrationStatus(w http.ResponseWriter, r *http.Request)
+	ListRegistration(w http.ResponseWriter, r *http.Request)
 }
 
 type Event struct {

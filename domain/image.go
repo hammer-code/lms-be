@@ -18,10 +18,12 @@ type ImageRepository interface {
 type ImageUsecase interface {
 	UploadImage(context.Context, UploadImage) (UploadImageResponse, error)
 	UpdateUseImage(context.Context, uint) error
+	GetStorage(ctx context.Context, fileName string) (filePath string, err error)
 }
 
 type ImageHandler interface {
 	UploadImage(w http.ResponseWriter, r *http.Request)
+	GetStorage(w http.ResponseWriter, r *http.Request)
 }
 
 type UploadImage struct {

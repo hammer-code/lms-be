@@ -131,6 +131,7 @@ func registerHandler(app app.App) *mux.Router {
 
 	public := v1.PathPrefix("/public").Subrouter()
 	public.HandleFunc("/events", app.EventHandler.GetEvents).Methods(http.MethodGet)
+	public.HandleFunc("/events/{id}", app.EventHandler.GetEvents).Methods(http.MethodGet)
 	public.HandleFunc("/images", app.ImageHandler.UploadImage).Methods(http.MethodPost)
 	public.HandleFunc("/events/registration", app.EventHandler.RegisterEvent).Methods(http.MethodPost)
 	public.HandleFunc("/events/pay", app.EventHandler.PayEvent).Methods(http.MethodPost)
@@ -147,7 +148,7 @@ func registerHandler(app app.App) *mux.Router {
 	protectedV1Route.HandleFunc("/delete", app.UserHandler.DeleteUser).Methods(http.MethodDelete)
 
 	protectedV1Route.HandleFunc("/events", app.EventHandler.CreateEvent).Methods(http.MethodPost)
-	protectedV1Route.HandleFunc("/events", app.EventHandler.GetEvents).Methods(http.MethodGet)
+	protectedV1Route.HandleFunc("/events/{id}", app.EventHandler.GetEventByID).Methods(http.MethodGet)
 	protectedV1Route.HandleFunc("/images", app.ImageHandler.UploadImage).Methods(http.MethodPost)
 
 	return router

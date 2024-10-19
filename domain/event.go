@@ -25,12 +25,10 @@ type EventRepository interface {
 
 type EventUsecase interface {
 	CreateEvent(ctx context.Context, payload CreateEvenPayload) error
-	// UpdateEvent(ctx context.Context, payload UpdateEvenPayload) error
-	// DeleteEvent(ctx context.Context, id int) error
-	// GetEventByID(ctx context.Context, id int) (EventDTO, error)
 	GetEvents(ctx context.Context, filter EventFilter) (data []Event, pagination Pagination, err error)
 	CreateRegisterEvent(ctx context.Context, payload RegisterEventPayload) (RegisterEventResponse, error)
 	CreatePayEvent(ctx context.Context, payload EventPayPayload) error
+	GetEventByID(ctx context.Context, id uint) (resp Event, err error)
 }
 
 type EventHandler interface {
@@ -38,6 +36,7 @@ type EventHandler interface {
 	GetEvents(w http.ResponseWriter, r *http.Request)
 	RegisterEvent(w http.ResponseWriter, r *http.Request)
 	PayEvent(w http.ResponseWriter, r *http.Request)
+	GetEventByID(w http.ResponseWriter, r *http.Request)
 }
 
 type Event struct {

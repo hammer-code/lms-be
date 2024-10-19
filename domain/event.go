@@ -146,10 +146,11 @@ type EventFilter struct {
 }
 
 type EventPay struct {
-	ID                uint    `json:"id" gorm:"primarykey"`
-	RegistrationEvent uint    `json:"registration_event_id"`
-	ImageProofPayment string  `json:"image_proof_payment"`
-	NetAmount         float64 `json:"net_amount"`
+	ID                  uint    `json:"id" gorm:"primarykey"`
+	RegistrationEventID uint    `json:"registration_event_id"`
+	EventID             uint    `json:"event_id"`
+	ImageProofPayment   string  `json:"image_proof_payment"`
+	NetAmount           float64 `json:"net_amount"`
 }
 
 func (EventPay) TableName() string {

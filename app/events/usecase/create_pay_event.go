@@ -19,16 +19,36 @@ func (uc usecase) CreatePayEvent(ctx context.Context, payload domain.EventPayPay
 		return errors.New("registration order not found")
 	}
 
+	dataImage, err := uc.imageRepository.GetImage(ctx, payload.ImageProofPayment)
+	if err != nil {
+		logrus.Error("failed to create event", dataImage)
+		return err
+	}
+
+	if dataImage.IsUsed {
+		err = errors.New("image not exists")
+		return err
+	}
+
 	err = uc.dbTX.StartTransaction(ctx, func(txCtx context.Context) error {
 		_, err := uc.repository.CreatePayEvent(txCtx, domain.EventPay{
-			RegistrationEvent: rEvent.ID,
-			ImageProofPayment: payload.ImageProofPayment,
-			NetAmount:         payload.NetAmount,
+			RegistrationEventID: rEvent.ID,
+			EventID:             rEvent.EventID,
+			ImageProofPayment:   payload.ImageProofPayment,
+			NetAmount:           payload.NetAmount,
 		})
+
 		if err != nil {
 			logrus.Error("failed to get event")
 			return err
 		}
+
+		err = uc.imageRepository.UpdateUseImage(txCtx, dataImage.ID)
+		if err != nil {
+			logrus.Error("failed to update use image")
+			return err
+		}
+
 		return nil
 	})
 

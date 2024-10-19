@@ -59,11 +59,11 @@ func (repo *repository) GetEvent(ctx context.Context, eventID uint) (data domain
 }
 
 func (repo *repository) GetRegistrationEvent(ctx context.Context, orderNo string) (data domain.RegistrationEvent, err error) {
-	db := repo.db.DB(ctx).Model(&domain.Event{})
+	db := repo.db.DB(ctx).Model(&domain.RegistrationEvent{})
 
 	err = db.Where("order_no = ?", orderNo).Find(&data).Error
 	if err != nil {
-		logrus.Error("repo.GetEvents: failed to get events use generic conditions")
+		logrus.Error("failed to get registration event use generic conditions")
 		return
 	}
 

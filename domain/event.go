@@ -29,6 +29,7 @@ type EventUsecase interface {
 	CreateRegisterEvent(ctx context.Context, payload RegisterEventPayload) (RegisterEventResponse, error)
 	CreatePayEvent(ctx context.Context, payload EventPayPayload) error
 	GetEventByID(ctx context.Context, id uint) (resp Event, err error)
+	RegistrationStatus(ctx context.Context, orderNo string) (resp RegisterStatusResponse, err error)
 }
 
 type EventHandler interface {
@@ -37,6 +38,7 @@ type EventHandler interface {
 	RegisterEvent(w http.ResponseWriter, r *http.Request)
 	PayEvent(w http.ResponseWriter, r *http.Request)
 	GetEventByID(w http.ResponseWriter, r *http.Request)
+	RegistrationStatus(w http.ResponseWriter, r *http.Request)
 }
 
 type Event struct {
@@ -201,4 +203,9 @@ type EventPayPayload struct {
 	OrderNo           string  `json:"order_no"`
 	ImageProofPayment string  `json:"image_proof_payment"`
 	NetAmount         float64 `json:"net_amount"`
+}
+
+type RegisterStatusResponse struct {
+	OrderNo string `json:"order_no"`
+	Status  string `json:"string"`
 }

@@ -38,6 +38,14 @@ func (uc usecase) CreateRegisterEvent(ctx context.Context, payload domain.Regist
 
 	orderNo := fmt.Sprintf("TXE-%d-%s%s%s%s", event.ID, time.Now().Format("06"), time.Now().Format("01"), time.Now().Format("02"), hash[0:4])
 
+	// is free event or not
+	status := "success registration"
+	upToYou := "registration success"
+	if event.Price != 0.0 {
+		status = "waiting for payment"
+		upToYou = "new register"
+	}
+
 	err = uc.dbTX.StartTransaction(ctx, func(txCtx context.Context) error {
 		_, err := uc.repository.CreateRegisterEvent(ctx, domain.RegistrationEvent{
 			OrderNo:     orderNo,
@@ -45,9 +53,10 @@ func (uc usecase) CreateRegisterEvent(ctx context.Context, payload domain.Regist
 			Name:        payload.Name,
 			Email:       payload.Email,
 			PhoneNumber: payload.PhoneNumber,
-			Status:      "register",
-			UpToYou:     "new register",
+			Status:      status,
+			UpToYou:     upToYou,
 		})
+
 		if err != nil {
 			logrus.Error("failed to get event")
 			return err

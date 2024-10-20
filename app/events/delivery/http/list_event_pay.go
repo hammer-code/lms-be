@@ -1,7 +1,6 @@
 package http
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -11,7 +10,6 @@ import (
 )
 
 func (h Handler) ListEventPay(w http.ResponseWriter, r *http.Request) {
-	fmt.Println(111)
 	flterPagination, err := domain.GetPaginationFromCtx(r)
 	if err != nil {
 		logrus.Error("failed to get pagination : ", err)

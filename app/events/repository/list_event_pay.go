@@ -2,7 +2,6 @@ package repository
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/hammer-code/lms-be/domain"
 	"github.com/sirupsen/logrus"
@@ -30,8 +29,6 @@ func (repo *repository) ListEventPay(ctx context.Context, filter domain.EventFil
 	}
 
 	db.Count(&totalData)
-
-	fmt.Println(23)
 
 	err = db.Limit(filter.FilterPagination.GetLimit()).
 		Offset(filter.FilterPagination.GetOffset()).

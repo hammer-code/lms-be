@@ -39,7 +39,7 @@ func (uc usecase) CreatePayEvent(ctx context.Context, payload domain.EventPayPay
 		})
 
 		if err != nil {
-			logrus.Error("failed to get event")
+			logrus.Error("failed to create pay event")
 			return err
 		}
 

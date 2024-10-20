@@ -163,11 +163,13 @@ func (EventPay) TableName() string {
 }
 
 type RegisterEventPayload struct {
-	EventID     uint   `json:"event_id"`
-	UserID      string `json:"user_id"`
-	Name        string `json:"name"`
-	Email       string `json:"email"`
-	PhoneNumber string `json:"phone_number"`
+	EventID           uint    `json:"event_id"`
+	UserID            string  `json:"user_id"`
+	Name              string  `json:"name"`
+	Email             string  `json:"email"`
+	PhoneNumber       string  `json:"phone_number"`
+	ImageProofPayment string  `json:"image_proof_payment"`
+	NetAmount         float64 `json:"net_amount"`
 }
 
 type RegistrationEvent struct {

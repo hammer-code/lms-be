@@ -23,6 +23,9 @@ type EventRepository interface {
 	GetRegistrationEvent(ctx context.Context, orderNo string) (data RegistrationEvent, err error)
 	ListRegistration(ctx context.Context, filter EventFilter) (tData int, data []RegistrationEvent, err error)
 	ListEventPay(ctx context.Context, filter EventFilter) (tData int, data []EventPay, err error)
+	UpdateEventPay(ctx context.Context, event EventPay) error
+	GetEventPay(ctx context.Context, orderNo string) (data EventPay, err error)
+	UpdateRegistrationEvent(ctx context.Context, event RegistrationEvent) error
 }
 
 type EventUsecase interface {
@@ -34,6 +37,7 @@ type EventUsecase interface {
 	RegistrationStatus(ctx context.Context, orderNo string) (resp RegisterStatusResponse, err error)
 	ListRegistration(ctx context.Context, filter EventFilter) (resp []RegistrationEvent, pagination Pagination, err error)
 	ListEventPay(ctx context.Context, filter EventFilter) (data []EventPay, pagination Pagination, err error)
+	PayProcess(ctx context.Context, payload PayProcessPayload) error
 }
 
 type EventHandler interface {
@@ -45,7 +49,7 @@ type EventHandler interface {
 	RegistrationStatus(w http.ResponseWriter, r *http.Request)
 	ListRegistration(w http.ResponseWriter, r *http.Request)
 	ListEventPay(w http.ResponseWriter, r *http.Request)
-	// ApproveEventPay(w http.ResponseWriter, r *http.Request)
+	PayProcess(w http.ResponseWriter, r *http.Request)
 }
 
 type Event struct {
@@ -159,6 +163,7 @@ type EventPay struct {
 	RegistrationEventID uint              `json:"registration_event_id"`
 	EventID             uint              `json:"event_id"`
 	ImageProofPayment   string            `json:"image_proof_payment"`
+	OrderNO             string            `json:"order_no"`
 	NetAmount           float64           `json:"net_amount"`
 	Status              string            `json:"status"`
 	RegistrationEvent   RegistrationEvent `json:"registration_event" gorm:"foreignKey:RegistrationEventID"`
@@ -219,4 +224,10 @@ type EventPayPayload struct {
 type RegisterStatusResponse struct {
 	OrderNo string `json:"order_no"`
 	Status  string `json:"string"`
+}
+
+type PayProcessPayload struct {
+	OrderNo string `json:"order_no"`
+	Status  string `json:"status"`
+	Note    string `json:"note"`
 }

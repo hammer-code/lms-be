@@ -153,9 +153,9 @@ func registerHandler(app app.App) *mux.Router {
 	protectedV1Route.HandleFunc("/events", app.EventHandler.GetEvents).Methods(http.MethodGet)
 	protectedV1Route.HandleFunc("/events/registrations", app.EventHandler.ListRegistration).Methods(http.MethodGet)
 	protectedV1Route.HandleFunc("/events/pays", app.EventHandler.ListEventPay).Methods(http.MethodGet)
+	protectedV1Route.HandleFunc("/events/pays", app.EventHandler.PayProcess).Methods(http.MethodPost)
 	protectedV1Route.HandleFunc("/events/{id}", app.EventHandler.GetEventByID).Methods(http.MethodGet)
 	protectedV1Route.HandleFunc("/images", app.ImageHandler.UploadImage).Methods(http.MethodPost)
-	// protectedV1Route.HandleFunc("/events/pays", app.EventHandler.GetEvents).Methods(http.MethodPost)
 
 	return router
 }

@@ -36,6 +36,8 @@ func (uc usecase) CreatePayEvent(ctx context.Context, payload domain.EventPayPay
 			EventID:             rEvent.EventID,
 			ImageProofPayment:   payload.ImageProofPayment,
 			NetAmount:           payload.NetAmount,
+			Status:              "PENDING",
+			OrderNO:             rEvent.OrderNo,
 		})
 
 		if err != nil {

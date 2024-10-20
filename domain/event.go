@@ -22,6 +22,7 @@ type EventRepository interface {
 	GetEvent(ctx context.Context, eventID uint) (data Event, err error)
 	GetRegistrationEvent(ctx context.Context, orderNo string) (data RegistrationEvent, err error)
 	ListRegistration(ctx context.Context, filter EventFilter) (tData int, data []RegistrationEvent, err error)
+	ListEventPay(ctx context.Context, filter EventFilter) (tData int, data []EventPay, err error)
 }
 
 type EventUsecase interface {
@@ -32,6 +33,7 @@ type EventUsecase interface {
 	GetEventByID(ctx context.Context, id uint) (resp Event, err error)
 	RegistrationStatus(ctx context.Context, orderNo string) (resp RegisterStatusResponse, err error)
 	ListRegistration(ctx context.Context, filter EventFilter) (resp []RegistrationEvent, pagination Pagination, err error)
+	ListEventPay(ctx context.Context, filter EventFilter) (data []EventPay, pagination Pagination, err error)
 }
 
 type EventHandler interface {
@@ -42,6 +44,8 @@ type EventHandler interface {
 	GetEventByID(w http.ResponseWriter, r *http.Request)
 	RegistrationStatus(w http.ResponseWriter, r *http.Request)
 	ListRegistration(w http.ResponseWriter, r *http.Request)
+	ListEventPay(w http.ResponseWriter, r *http.Request)
+	// ApproveEventPay(w http.ResponseWriter, r *http.Request)
 }
 
 type Event struct {
@@ -151,11 +155,13 @@ type EventFilter struct {
 }
 
 type EventPay struct {
-	ID                  uint    `json:"id" gorm:"primarykey"`
-	RegistrationEventID uint    `json:"registration_event_id"`
-	EventID             uint    `json:"event_id"`
-	ImageProofPayment   string  `json:"image_proof_payment"`
-	NetAmount           float64 `json:"net_amount"`
+	ID                  uint              `json:"id" gorm:"primarykey"`
+	RegistrationEventID uint              `json:"registration_event_id"`
+	EventID             uint              `json:"event_id"`
+	ImageProofPayment   string            `json:"image_proof_payment"`
+	NetAmount           float64           `json:"net_amount"`
+	Status              string            `json:"status"`
+	RegistrationEvent   RegistrationEvent `json:"registration_event" gorm:"foreignKey:RegistrationEventID"`
 }
 
 func (EventPay) TableName() string {
